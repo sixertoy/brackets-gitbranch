@@ -1,10 +1,10 @@
 {
-    "name": "p4bl1t0.languageswitcher",
-    "title": "Brackets Language Switcher",
-    "description": "Allow to change the language mode for the editor. For example, to see Drupal inc files as PHP.",
-    "homepage": "https://github.com/p4bl1t0/brackets-languageswitcher",
+    "name": "malas34.githubnfo",
+    "title": "Brackets Github Infos",
+    "description": "Show project's git branches name in title bar",
+    "homepage": "https://github.com/malas34/brackets-githubnfo",
     "version": "0.1.0",
-    "author": "p4bl1t0 <pabloluisbotta@gmail.com>",
+    "author": "malas34 <malas34.github@gmail.com>",
     "license": "MIT",
     "engines": {
         "brackets": ">=0.24.0"
