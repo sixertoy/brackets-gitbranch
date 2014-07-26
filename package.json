@@ -1,0 +1,12 @@
+{
+    "name": "p4bl1t0.languageswitcher",
+    "title": "Brackets Language Switcher",
+    "description": "Allow to change the language mode for the editor. For example, to see Drupal inc files as PHP.",
+    "homepage": "https://github.com/p4bl1t0/brackets-languageswitcher",
+    "version": "0.1.0",
+    "author": "p4bl1t0 <pabloluisbotta@gmail.com>",
+    "license": "MIT",
+    "engines": {
+        "brackets": ">=0.24.0"
+    }
+}
