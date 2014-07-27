@@ -12,8 +12,10 @@ define(function (require, exports, module) {
 
     function _handleProjectClose(event)
     {
-        var container = $( '#githubnfo' );
-        container.remove();
+        var container = $( '#githubnfo' ),
+            result = new $.Deferred();
+        if( container.length ) container.remove();
+        return result.promise();
     }
 
     /**
