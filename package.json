@@ -3,7 +3,7 @@
     "title": "Brackets Github NFO",
     "description": "Show project's git branch in status bar",
     "homepage": "https://github.com/malas34/brackets-githubnfo",
-    "version": "1.0.0a",
+    "version": "1.0.0",
     "author": "malas34 <malas34.github@gmail.com>",
     "license": "MIT",
     "engines": {
