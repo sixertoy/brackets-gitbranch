@@ -10,6 +10,12 @@ define(function (require, exports, module) {
         FileSystem = brackets.getModule("filesystem/FileSystem"),
         FileUtils = brackets.getModule("file/FileUtils");
 
+    function _handleProjectClose(event)
+    {
+        var container = $( '#githubnfo' );
+        container.remove();
+    }
+
     /**
      * Check content on git HEAD file
      * https://github.com/adobe/brackets/wiki/Brackets-Development-How-Tos
@@ -55,5 +61,6 @@ define(function (require, exports, module) {
     }
 
     $( ProjectManager ).on( "projectOpen ", _handleProjectOpen );
+    $( ProjectManager ).on( "projectClose ", _handleProjectClose );
 
 });
