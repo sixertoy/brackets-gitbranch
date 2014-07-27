@@ -1,12 +1,12 @@
 {
     "name": "malas34.githubnfo",
-    "title": "Brackets Github Infos",
-    "description": "Show project's git branches name in title bar",
+    "title": "Brackets Github NFO",
+    "description": "Show project's git branch in status bar",
     "homepage": "https://github.com/malas34/brackets-githubnfo",
     "version": "0.1.0",
     "author": "malas34 <malas34.github@gmail.com>",
     "license": "MIT",
     "engines": {
-        "brackets": ">=0.24.0"
+        "brackets": ">=0.41.0"
     }
 }

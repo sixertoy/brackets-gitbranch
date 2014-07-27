@@ -2,58 +2,58 @@
 /*global define, $, brackets */
 
 define(function (require, exports, module) {
+
     "use strict";
 
-    var CommandManager  = brackets.getModule("command/CommandManager"),
-        EditorManager   = brackets.getModule("editor/EditorManager"),
-        Menus           = brackets.getModule("command/Menus"),
-        LanguageManager = brackets.getModule("language/LanguageManager");
+    var ProjectManager = brackets.getModule("project/ProjectManager"),
+        ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
+        FileSystem = brackets.getModule("filesystem/FileSystem"),
+        FileUtils = brackets.getModule("file/FileUtils");
 
-    var _defaultLanguagesJSON = JSON.parse(brackets.getModule("text!language/languages.json"));
-        
-    var menu = Menus.addMenu("File Language", "p4bl1t0.languageSwitcher.mainMenu");
-    
-    // Function to run when the menu item is clicked
-    function changeLanguage(argKey) {
-        var editor = EditorManager.getFocusedEditor();
-        if (editor) {
-            if (_defaultLanguagesJSON[argKey].mode !== undefined && _defaultLanguagesJSON[argKey] !== null) {
-                //console.log(_defaultLanguagesJSON[argKey].mode);
-                $("#status-language").text(_defaultLanguagesJSON[argKey].name);
-                editor._codeMirror.setOption("mode", _defaultLanguagesJSON[argKey].mode);
+    /**
+     * Check content on git HEAD file
+     * https://github.com/adobe/brackets/wiki/Brackets-Development-How-Tos
+     */
+    function _handleProjectOpen(event){
+        var file,
+            filename = '.git/HEAD',
+            result = new $.Deferred(),
+            path = ProjectManager.getInitialProjectPath(),
+            $statusbar = $( '#status-indicators .spinner' ),
+            modulePath = ExtensionUtils.getModulePath(module),
+            template = '<div id="githubnfo" style="background:url('+modulePath+'images/github_icon-15x15.png) no-repeat 5px center transparent;padding-left:25px;"><span style="color:#8fddff;">GIT BRANCH:&nbsp;</span>%%VERSION%%</div>';
+
+        file = FileSystem.getFileForPath(path+filename);
+        file.read(function(err,content){
+            var branch, html;
+            if( !err || ( err === null ) ){
+                try{
+                    if( content.indexOf( '/' ) != -1 && content.indexOf( ':' ) != -1 ){
+                        // Split last path
+                        branch = content.split( "/" );
+                        branch = branch[ branch.length - 1 ];
+                        // Capitalize First Letter
+                        branch = branch.trim().charAt(0).toUpperCase() + branch.slice(1);
+                        html = template.split( '%%VERSION%%' ).join( branch );
+                        $( html ).insertBefore( $statusbar );
+                    }
+                    else{
+                        console.error("Brackets NFO incorrect format " + file.fullPath );
+                        result.reject(err);
+                    }
+                }catch (e) {
+                    console.error("Brackets NFO: error parsing " + file.fullPath + ". Details: " + e);
+                    result.reject(e);
+                    return;
+                }
             }
-        }
-        
-        
-    }
-    
-    var keys = Object.keys(_defaultLanguagesJSON);
-    
-    /*for (var key in _defaultLanguagesJSON) {
-        if (_defaultLanguagesJSON.hasOwnProperty(key)) {
-            keys.push(key.toString());
-            if (_defaultLanguagesJSON[key].mode !== undefined && _defaultLanguagesJSON[key] !== null) {
-                menu.addMenuItem(attachCommand(key));
+            else{
+                result.reject(err);
             }
-        }
-    }*/
-    
-    keys.sort();
-    
-    for (var index = 0; index < keys.length; index++) {
-        if (_defaultLanguagesJSON[keys[index]].mode !== undefined && _defaultLanguagesJSON[keys[index]] !== null) {
-            menu.addMenuItem(attachCommand(keys[index]));
-        }
-    }
-    
-    
-    function attachCommand(k) {
-        var id = "p4bl1t0.languageSwitcher." + k;
-        var cmd = CommandManager.register(_defaultLanguagesJSON[k].name, id, function() {
-                changeLanguage(k);
         });
-        return cmd;
+        return result.promise();
     }
-    
-    exports.changeLanguage = changeLanguage;
+
+    $( ProjectManager ).on( "projectOpen ", _handleProjectOpen );
+
 });

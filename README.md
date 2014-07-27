@@ -1,9 +1,7 @@
 Brackets Github Infos
 =========================
 
-Show project's git branches name in title bar
-
-This is an alpha version
+Show project's git branch in status bar
 
 Feel free to collaborate in this project.
 
