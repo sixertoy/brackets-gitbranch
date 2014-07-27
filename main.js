@@ -5,31 +5,21 @@ define(function (require, exports, module) {
 
     "use strict";
 
-    var ProjectManager = brackets.getModule("project/ProjectManager"),
+    var FileSystemEntry = brackets.getModule("filesystem/FileSystemEntry"),
+        ProjectManager = brackets.getModule("project/ProjectManager"),
         ExtensionUtils = brackets.getModule("utils/ExtensionUtils"),
         FileSystem = brackets.getModule("filesystem/FileSystem"),
         FileUtils = brackets.getModule("file/FileUtils");
 
-    function _handleProjectClose(event)
+    function _loadConfigFiles()
     {
-        var container = $( '#githubnfo' ),
-            result = new $.Deferred();
-        if( container.length ) container.remove();
-        return result.promise();
-    }
-
-    /**
-     * Check content on git HEAD file
-     * https://github.com/adobe/brackets/wiki/Brackets-Development-How-Tos
-     */
-    function _handleProjectOpen(event){
         var file,
             filename = '.git/HEAD',
             result = new $.Deferred(),
             path = ProjectManager.getInitialProjectPath(),
             $statusbar = $( '#status-indicators .spinner' ),
             modulePath = ExtensionUtils.getModulePath(module),
-            template = '<div id="githubnfo" style="background:url('+modulePath+'images/github_icon-15x15.png) no-repeat 5px center transparent;padding-left:25px;"><span style="color:#8fddff;">GIT BRANCH:&nbsp;</span>%%VERSION%%</div>';
+            template = '<div id="githubnfo" style="background:url('+modulePath+'images/github_icon-15x15.png) no-repeat 5px center transparent;padding-left:25px;"><a style="color:#FFF;text-decoration:none"; href="%%REPOURL%%" title="View on GITHUB"><span style="color:#8fddff;">GIT BRANCH:&nbsp;</span><span>%%VERSION%%</span></a></div>';
 
         file = FileSystem.getFileForPath(path+filename);
         file.read(function(err,content){
@@ -42,6 +32,7 @@ define(function (require, exports, module) {
                         branch = branch[ branch.length - 1 ];
                         // Capitalize First Letter
                         branch = branch.trim().charAt(0).toUpperCase() + branch.slice(1);
+                        // Replace Version in template
                         html = template.split( '%%VERSION%%' ).join( branch );
                         $( html ).insertBefore( $statusbar );
                     }
@@ -59,7 +50,63 @@ define(function (require, exports, module) {
                 result.reject(err);
             }
         });
+        filename = '.git/config';
+        file = FileSystem.getFileForPath(path+filename);
+        file.read(function(err,content){
+            var html, url,start,end;
+            if( !err || ( err === null ) ){
+                try{
+                    start = content.indexOf( 'https://github.com' );
+                    if( start != -1 )
+                    {
+                        url = content.slice( start );
+                        end = url.indexOf( '.git' );
+                        if( end != -1 )
+                        {
+                            url = url.slice( 0, ( end + ( '.git' ).length ) ).trim();
+                            html = $( '#githubnfo' ).html().split( '%%REPOURL%%' ).join( url );
+                            $( '#githubnfo' ).html( html );
+                        }
+                    }
+                    else{
+                        console.error("Brackets NFO unable to parse URL " + file.fullPath );
+                        result.reject(err);
+                    }
+                }catch (e) {
+                    console.error("Brackets NFO: error parsing " + file.fullPath + ". Details: " + e);
+                    result.reject(e);
+                    return;
+                }
+            }
+            else{
+                result.reject(err);
+            }
+        });
         return result.promise();
+    }
+
+    function _handleProjectClose(event)
+    {
+        var container = $( '#githubnfo' ),
+            result = new $.Deferred();
+        if( container.length ) container.remove();
+        return result.promise();
+    }
+
+    /**
+     * Check content on git HEAD file
+     * https://github.com/adobe/brackets/wiki/Brackets-Development-How-Tos
+     */
+    function _handleProjectOpen(event){
+        var directory,
+            gitdir = '.git',
+            result = new $.Deferred(),
+            path = ProjectManager.getInitialProjectPath();
+        directory = FileSystem.getDirectoryForPath(path+gitdir);
+        directory.exists(function(err, exists){
+            if( exists ) _loadConfigFiles();
+            return result.promise();
+        });
     }
 
     $( ProjectManager ).on( "projectOpen ", _handleProjectOpen );
