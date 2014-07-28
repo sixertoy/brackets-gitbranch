@@ -1,5 +1,5 @@
 Brackets Github Infos
-=========================
+==
 
 Show project's git branch in status bar
 
@@ -11,4 +11,4 @@ Parsing Github's config files is a cool concept... full of split.join sh*t
 
 If you find any bug please submit an issue :).
 
-MIT License 2014
+[The MIT License (MIT)](http://opensource.org/licenses/MIT)
