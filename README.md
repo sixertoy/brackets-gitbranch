@@ -3,7 +3,7 @@ Brackets Github Infos
 
 Show project's git branch in status bar
 
-![Picture](https://github.com/malas34/brackets-githubnfo/)
+![Picture](https://github.com/malas34/brackets-githubnfo/blob/master/images/screenshot.png)
 
 Feel free to collaborate in this project.
 
