@@ -23,34 +23,46 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global define, brackets */
+/*global $, define, brackets, Mustache */
 define(function (require, exports, module) {
     'use strict';
 
     var AppInit = brackets.getModule('utils/AppInit'),
-        NodeDomain     = brackets.getModule('utils/NodeDomain'),
+        NodeDomain = brackets.getModule('utils/NodeDomain'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
-        ProjectManager     = brackets.getModule('project/ProjectManager');
+        ProjectManager = brackets.getModule('project/ProjectManager'),
+        ExtensionUITemplate = require("text!htmlContent/GithubNFO.html");
 
-    var gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
+    var $statusbar = $( '#status-indicators .spinner' );
+        gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
+
+    function _createEtensionUI(branches) {
+        $( Mustache.render(ExtensionUITemplate, {
+            'current': branches.current,
+            'branches': branches.branches
+        }) )
+        .insertBefore($statusbar);
+    }
+
 
     // Helper function that runs the simple.getBranches command and
     // logs the result to the console
     function getGitBranches() {
         // console.log('[brackets-githubnfo] APP :: getGitBranches');
         var projectPath = ProjectManager.getInitialProjectPath();
-        if( projectPath !== null ){
+        if (projectPath !== null) {
             gitDomain.exec('getBranches', projectPath)
-                .done(function(branches) {
+                .done(function (branches) {
                     console.log('[brackets-githubnfo] git.getBranches success');
-                }).fail(function(err) {
-                    console.error('[brackets-githubnfo] failed to run git.getBranches :: '+ err);
+                    _createEtensionUI(branches);
+                }).fail(function (err) {
+                    console.error('[brackets-githubnfo] failed to run git.getBranches :: ' + err);
                 });
         }
     }
 
     // Log memory when extension is loaded
-    AppInit.appReady(function(){
+    AppInit.appReady(function () {
         // console.log('[brackets-githubnfo] APP :: appReady');
         getGitBranches();
     });

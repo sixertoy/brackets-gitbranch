@@ -48,16 +48,16 @@
                 description: 'Absolute path for the current project'
         }],
         result = [{
-            name: 'result',
+            name: 'data',
             type: 'object',
-            description: ''
+            description: '{branches:[],current:null}'
         }],
         description = 'Returns the total or free memory on the user\'s system in bytes';
 
 
     function _execute(projectPath, errback) {
         var i, v, result,
-            branches = {data:[],current:null};
+            data = {branches:[],current:null};
         shellOptions.cwd = projectPath;
         try{
             isDirectory = fs.statSync(shellOptions.cwd + '.git').isDirectory();
@@ -70,11 +70,11 @@
                         for( i = 0; i < result.length; i++ ){
                             v = result[i].trim();
                             if( v !== '' && v !== '*' ){
-                                branches.data.push(v);
-                                if(result[i-1].trim() === '*' ) { branches.current = v; }
+                                data.branches.push({name:v});
+                                if(result[i-1].trim() === '*' ) { data.current = v; }
                             }
                         }
-                        return errback(null, branches);
+                        return errback(null, data);
                     }
                 });
             } else {
