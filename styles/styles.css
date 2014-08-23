@@ -1,3 +1,14 @@
-/* 
+/*
  * Place CSS here
  */
+#githubnfo{
+    padding-left:25px;
+    background:url(images/github_icon-15x15.png) no-repeat 5px center transparent;
+}
+#githubnfo a{
+    color:#FFF;
+    text-decoration:none;
+}
+#githubnfo a span{
+    color:#8fddff;
+}

@@ -3,11 +3,14 @@
     "title": "Brackets Github NFO",
     "description": "Show project's git branch in Brackets status bar",
     "homepage": "https://github.com/malas34/githubnfo",
-    "version": "1.0.0",
-    "author": "Matthieu Lassalvy <malas34.github@gmail.com>",
+    "version": "2.0.0",
+    "author": {
+        "name": "Matthieu Lassalvy",
+        "email": "malas34.github@gmail.com",
+        "url": "https://github.com/malas34"
+    },
     "license": "MIT",
     "engines": {
         "brackets": ">=0.42.0"
     },
-    "dependencies": {}
 }

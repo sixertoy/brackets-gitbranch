@@ -17,6 +17,8 @@ $RECYCLE.BIN/
 # =========================
 # NPM + BOWER
 # =========================
+node/bower_components/
+node/node_modules/
 bower_components/
 node_modules/
 

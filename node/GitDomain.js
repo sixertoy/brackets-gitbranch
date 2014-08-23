@@ -23,35 +23,28 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global define, brackets */
-define(function (require, exports, module) {
+/*global require, console */
+(function () {
     'use strict';
+;
+    var getBranches = require('./commands/get_branches'),
+        switchBranch = require('./commands/switch_branch');
 
-    var AppInit = brackets.getModule('utils/AppInit'),
-        NodeDomain     = brackets.getModule('utils/NodeDomain'),
-        ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
-        ProjectManager     = brackets.getModule('project/ProjectManager');
-
-    var gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
-
-    // Helper function that runs the simple.getBranches command and
-    // logs the result to the console
-    function getGitBranches() {
-        // console.log('[brackets-githubnfo] APP :: getGitBranches');
-        var projectPath = ProjectManager.getInitialProjectPath();
-        if( projectPath !== null ){
-            gitDomain.exec('getBranches', projectPath)
-                .done(function(branches) {
-                    console.log('[brackets-githubnfo] git.getBranches success');
-                }).fail(function(err) {
-                    console.error('[brackets-githubnfo] failed to run git.getBranches :: '+ err);
-                });
+    /**
+     * Initializes the test domain with several test commands.
+     * @param {DomainManager} domainManager The DomainManager for the server
+     */
+    function init(domainManager) {
+        if (!domainManager.hasDomain('git')) {
+            domainManager.registerDomain('git', {
+                major: 0,
+                minor: 1
+            });
         }
+        getBranches.register(domainManager);
+        switchBranch.register(domainManager);
     }
 
-    // Log memory when extension is loaded
-    AppInit.appReady(function(){
-        // console.log('[brackets-githubnfo] APP :: appReady');
-        getGitBranches();
-    });
-});
+    exports.init = init;
+
+}());
