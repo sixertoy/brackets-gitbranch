@@ -66,7 +66,7 @@
                     if (err !== null) {
                         return errback('git branch Command Error', null);
                     } else {
-                        result = stdout.split(' ');
+                        result = stdout.split('\n').join(' ').split(' ');
                         for( i = 0; i < result.length; i++ ){
                             v = result[i].trim();
                             if( v !== '' && v !== '*' ){

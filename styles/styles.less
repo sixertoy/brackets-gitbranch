@@ -1,0 +1,68 @@
+// out: styles.css, compress: true, strictMath: true
+/*
+ * Place CSS here
+ */
+body.dark{}
+#githubnfo-list.githubnfo,
+#githubnfo-button.githubnfo{
+    *{
+        margin:0;
+        padding:0;
+    }
+    color:#FFF;
+    body.dark &{
+        background:#444749;
+    }
+    a{
+        color:#8fddff;
+        text-decoration: none;
+    }
+    strong{
+        body.dark &{
+            color:#FFF;
+        }
+    }
+    &.list{
+        position:absolute;
+        ul{
+            padding:10px 0;
+            background:#3d3f41;
+            list-style-type:none;
+            li{
+                width: 100%;
+                text-align: center;
+                background:#3d3f41;
+                a{
+                    width: 100%;
+                    padding:5px 0;
+                    display: block;
+                    overflow: hidden;
+                }
+            }
+        }
+    }
+    &.button{
+        overflow:hidden;
+        padding-left: 30px;
+        body.dark &{
+            background:url(images/github_icon-15x15.png) no-repeat 8px center transparent !important;
+        }
+        a{
+            width:80px;
+            margin-left:5px;
+            text-align: center;
+            background:#3d3f41;
+            display: inline-block;
+        }
+    }
+}
+
+#githubnfo-list.githubnfo{
+    bottom:-25px;
+    position: absolute;
+    transition:bottom 0.3s linear 0s;
+    a:hover{
+        color:#FFF;
+        background:#444749;
+    }
+}

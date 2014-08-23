@@ -30,18 +30,39 @@ define(function (require, exports, module) {
     var AppInit = brackets.getModule('utils/AppInit'),
         NodeDomain = brackets.getModule('utils/NodeDomain'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
-        ProjectManager = brackets.getModule('project/ProjectManager'),
-        ExtensionUITemplate = require("text!htmlContent/GithubNFO.html");
+        ProjectManager = brackets.getModule('project/ProjectManager');
 
-    var $statusbar = $( '#status-indicators .spinner' );
+    var ListUITemplate = require('text!htmlContent/GithubNFO_list.html'),
+        ButtonUITemplate = require('text!htmlContent/GithubNFO_button.html');
+
+    var $content = $('body > .main-view > .content'),
+        $statusbar = $('#status-indicators .spinner'),
         gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
 
+    ExtensionUtils.loadStyleSheet(module, "styles/styles.css");
+
     function _createEtensionUI(branches) {
-        $( Mustache.render(ExtensionUITemplate, {
-            'current': branches.current,
+        $(Mustache.render(ButtonUITemplate, {
+            'current': branches.current
+        }))
+            .insertBefore($statusbar);
+        $(Mustache.render(ListUITemplate, {
             'branches': branches.branches
-        }) )
-        .insertBefore($statusbar);
+        }))
+            .appendTo($content);
+        var $button = $('#githubnfo-button a');
+        var $list = $('#githubnfo-list').css({
+            'width': ($button.width() + 'px'),
+            'bottom':('-' + $('#githubnfo-list').height() + 'px' ),
+            'left': (($button.position().left + $('#status-indicators').position().left) + 'px')
+        });
+        $button.on('click', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            $('#githubnfo-list').css({
+                'bottom': ($button.height() + 'px')
+            });
+        });
     }
 
 
