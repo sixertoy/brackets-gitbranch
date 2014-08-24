@@ -38,6 +38,7 @@ define(function (require, exports, module) {
 
     var Strings = require("strings"),
         projectPath = ProjectManager.getInitialProjectPath(),
+        GithubnfoDialogHTML = require('text!htmlContent/GithubNFO_dialog.html'),
         GithubnfoButtonHTML = require('text!htmlContent/GithubNFO_button.html');
 
     var DEBUG_MODE = true,
@@ -47,25 +48,46 @@ define(function (require, exports, module) {
     var branchesSelect,
         gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
 
-    ExtensionUtils.loadStyleSheet(module, 'styles/styles.css');
-
+    /**
+     *
+     * Console log with debug switcher
+     *
+     * @params [String] msg
+     */
     function __debug(msg) {
-        if (DEBUG_MODE) { console.log(msg); }
+        if (DEBUG_MODE) {
+            console.log(msg);
+        }
     }
 
+    /**
+     *
+     * Exec git checkout command between local repo branches
+     *
+     * Dialog prompt if error like
+     * - Current branch needs commit before switch
+     *
+     * @params [Event] event
+     * @params [Object] item
+     * @params [Number] index
+     */
     function _switchBranch(event, item, index) {
         __debug('[brackets-githubnfo] branch switch ' + BRANCH_SET_AS_DEFAULT + ' > ' + item.name);
         gitDomain.exec('switchBranch', projectPath, item.name)
             .fail(function (data) {
-                __debug(data.err);
-                var message = 'il y a une erreur';
-                Dialog.showModalDialog('', 'Github Error', message);
-                // console.log('[brackets-githubnfo] failed to run git.switchBranch :: ' + data.msg);
+                __debug('[brackets-githubnfo] ' + data.title + ' \n' + data.message);
+                data.message = data.message.split('\n').join('<br>');
+                Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
             });
     }
 
+    /**
+     *
+     * Exec git branch command for local reppo branches
+     *
+     */
     function _populateBranchDropdown() {
-        __debug('[brackets-githubnfo] branches initliaze');
+        __debug('[brackets-githubnfo] app ready');
         if (projectPath !== null) {
             gitDomain.exec('getBranches', projectPath)
                 .done(function (data) {
@@ -73,20 +95,25 @@ define(function (require, exports, module) {
                     BRANCH_SET_AS_DEFAULT = data.branches[data.current].name;
                     branchesSelect.items = data.branches;
                     branchesSelect.setButtonLabel(BRANCH_SET_AS_DEFAULT);
-                    __debug('[brackets-githubnfo] current used branch  ' + BRANCH_SET_AS_DEFAULT);
-                }).fail(function (err) {
-                    // console.log('[brackets-githubnfo] failed to run git.getBranches :: ' + err);
+                    __debug('[brackets-githubnfo] current used branch ' + BRANCH_SET_AS_DEFAULT);
+                }).fail(function (data) {
+                    /*
+                    Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
+                    __debug('[brackets-githubnfo] ' + data.msg + ' :: ' + data.output);
+                    */
                 });
         }
     }
 
+    ExtensionUtils.loadStyleSheet(module, 'styles/styles.css');
+
     /**
      *
-     * Init de la vue de l'extension
+     * Init des vues de l'extension
      *
      */
     function _init() {
-        __debug('[brackets-githubnfo] init');
+        __debug('[brackets-githubnfo] app init');
         var  $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
         $parent.before(Mustache.render(GithubnfoButtonHTML, Strings));
 
@@ -106,8 +133,5 @@ define(function (require, exports, module) {
 
     // Log memory when extension is loaded
     AppInit.htmlReady(_init);
-    AppInit.appReady(function () {
-        __debug('[brackets-githubnfo] ready');
-        _populateBranchDropdown();
-    });
+    AppInit.appReady(_populateBranchDropdown);
 });
