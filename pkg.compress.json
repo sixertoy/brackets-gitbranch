@@ -1,0 +1,4 @@
+{
+    "src": ["styles/**/*", "htmlContent/**/*", "nls/**/*", "node/**/*", "main.js", "package.json", "README.md", "HISTORY.md", "LICENCE-MIT", "strings.js", "screenshot.png", "!styles/**/*.less"],
+    "dest": "malas34.githubnfo/"
+}

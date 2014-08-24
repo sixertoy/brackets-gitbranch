@@ -26,6 +26,6 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
 /*global define */
 define({
-    "GIT_UNAVAILABLE": "Git indisponible",
-    "OPEN_IN_GITHUB": "Ouvrir Github"
+    'GIT_UNAVAILABLE': 'Git indisponible',
+    'OPEN_IN_GITHUB': 'Ouvrir Github'
 });

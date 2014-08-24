@@ -23,7 +23,7 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global exports, require, console */
+/*global exports, require */
 (function () {
     'use strict';
 

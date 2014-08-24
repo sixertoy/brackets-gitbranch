@@ -1,9 +1,9 @@
 {
     "name": "malas34.githubnfo",
     "title": "Brackets Github NFO",
-    "description": "Show project's git branch in Brackets status bar",
+    "description": "Show/switch git's project branch",
     "homepage": "https://github.com/malas34/githubnfo",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "author": {
         "name": "Matthieu Lassalvy",
         "email": "malas34.github@gmail.com",
@@ -13,4 +13,18 @@
     "engines": {
         "brackets": ">=0.42.0"
     },
+    "files": [
+        "main.js"
+    ],
+    "keywords": [
+        "git",
+        "branch",
+        "switch"
+    ],
+    "dependencies": {
+        "grunt": "0.4.5",
+        "grunt-cli": "0.1.13",
+        "grunt-contrib-jshint": "0.10.0",
+        "grunt-contrib-compress": "0.10.0"
+    }
 }

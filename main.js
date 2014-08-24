@@ -27,17 +27,16 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var _ = brackets.getModule("thirdparty/lodash"),
+    var _ = brackets.getModule('thirdparty/lodash'),
         AppInit = brackets.getModule('utils/AppInit'),
         Dialog = brackets.getModule('widgets/Dialogs'),
-        StatusBar = brackets.getModule("widgets/StatusBar"),
         NodeDomain = brackets.getModule('utils/NodeDomain'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
         ProjectManager = brackets.getModule('project/ProjectManager'),
         DropdownButton = brackets.getModule('widgets/DropdownButton').DropdownButton;
 
-    var Strings = require("strings"),
-        projectPath = ProjectManager.getInitialProjectPath(),
+    var projectPath,
+        Strings = require('strings'),
         GithubnfoDialogHTML = require('text!htmlContent/GithubNFO_dialog.html'),
         GithubnfoButtonHTML = require('text!htmlContent/GithubNFO_button.html');
 
@@ -69,11 +68,13 @@ define(function (require, exports, module) {
      *
      * @params [Event] event
      * @params [Object] item
-     * @params [Number] index
      */
-    function _switchBranch(event, item, index) {
+    function _switchBranch(event, item) {
         __debug('[brackets-githubnfo] branch switch ' + BRANCH_SET_AS_DEFAULT + ' > ' + item.name);
         gitDomain.exec('switchBranch', projectPath, item.name)
+            .done(function () {
+                // ProjectManager.refreshFileTree();
+            })
             .fail(function (data) {
                 __debug('[brackets-githubnfo] ' + data.title + ' \n' + data.message);
                 data.message = data.message.split('\n').join('<br>');
@@ -105,11 +106,11 @@ define(function (require, exports, module) {
         }
     }
 
-    function _getRemoteURL(){
+    function _getRemoteURL() {
         __debug('[brackets-githubnfo] app ready');
         if (projectPath !== null) {
             gitDomain.exec('getOrigin', projectPath)
-                .done(function(url){
+                .done(function (url) {
                     console.log(url);
                     branchesSelect.$button.show();
                     $('#githubnfo').addClass('active');
@@ -141,19 +142,27 @@ define(function (require, exports, module) {
         branchesSelect = new DropdownButton('', [], function (item, index) {
             var html = _.escape(item.name);
             if (index === BRANCH_SET_AS_DEFAULT_INDEX) {
-                html = "<span class='checked-branch'></span>" + html;
+                html = '<span class="checked-branch"></span>' + html;
             }
             return html;
         });
         $(branchesSelect).on('select', _switchBranch);
-        branchesSelect.dropdownExtraClasses = "dropdown-github-branch";
-        branchesSelect.$button.addClass("btn-status-bar")
-            .css("width", "auto")
+        branchesSelect.dropdownExtraClasses = 'dropdown-github-branch';
+        branchesSelect.$button.addClass('btn-status-bar')
+            .css('width', 'auto')
             .hide();
-        $("#githubnfo").append(branchesSelect.$button);
+        $('#githubnfo').append(branchesSelect.$button);
     }
 
-    // Log memory when extension is loaded
+    function _onProjectOpen() {
+        projectPath = ProjectManager.getInitialProjectPath();
+        _getRemoteURL();
+    }
+
     AppInit.htmlReady(_init);
-    AppInit.appReady(_getRemoteURL);
+    AppInit.appReady(function () {
+        _onProjectOpen();
+        $(ProjectManager).on('projectClose', function () {});
+        $(ProjectManager).on('projectOpen projectRefresh', _onProjectOpen);
+    });
 });
