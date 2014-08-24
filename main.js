@@ -27,15 +27,9 @@
 define(function (require, exports, module) {
     'use strict';
 
-
-    /*
-    EditorManager.focusEditor();
-
-    */
-
     var _ = brackets.getModule("thirdparty/lodash"),
         AppInit = brackets.getModule('utils/AppInit'),
-        //EditorManager = brackets.getModule("editor/EditorManager"),
+        Dialog = brackets.getModule('widgets/Dialogs'),
         StatusBar = brackets.getModule("widgets/StatusBar"),
         NodeDomain = brackets.getModule('utils/NodeDomain'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
@@ -43,47 +37,45 @@ define(function (require, exports, module) {
         DropdownButton = brackets.getModule('widgets/DropdownButton').DropdownButton;
 
     var Strings = require("strings"),
+        projectPath = ProjectManager.getInitialProjectPath(),
         GithubnfoButtonHTML = require('text!htmlContent/GithubNFO_button.html');
 
-    var BRANCH_SET_AS_DEFAULT_INDEX = false;
+    var DEBUG_MODE = true,
+        BRANCH_SET_AS_DEFAULT = false,
+        BRANCH_SET_AS_DEFAULT_INDEX = false;
 
     var branchesSelect,
         gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
 
     ExtensionUtils.loadStyleSheet(module, 'styles/styles.css');
 
-
-    /*
-    function _switchBranch(num) {
-        var projectPath = ProjectManager.getInitialProjectPath();
-        if (projectPath !== null) {
-        }
+    function __debug(msg) {
+        if (DEBUG_MODE) { console.log(msg); }
     }
-    */
 
     function _switchBranch(event, item, index) {
-        gitDomain.exec('switchBranches', item.name)
-            .done(function (branches) {
-                BRANCH_SET_AS_DEFAULT_INDEX = index;
-                branchesSelect.setButtonLabel(item.name);
-                // ProjectManager.refreshFileTree();
-            })
-            .fail(function (err) {
-                    console.error('[brackets-githubnfo] failed to run git.switchBranches :: ' + err);
+        __debug('[brackets-githubnfo] branch switch ' + BRANCH_SET_AS_DEFAULT + ' > ' + item.name);
+        gitDomain.exec('switchBranch', projectPath, item.name)
+            .fail(function (data) {
+                __debug(data.err);
+                var message = 'il y a une erreur';
+                Dialog.showModalDialog('', 'Github Error', message);
+                // console.log('[brackets-githubnfo] failed to run git.switchBranch :: ' + data.msg);
             });
     }
 
     function _populateBranchDropdown() {
-        var projectPath = ProjectManager.getInitialProjectPath();
+        __debug('[brackets-githubnfo] branches initliaze');
         if (projectPath !== null) {
             gitDomain.exec('getBranches', projectPath)
                 .done(function (data) {
                     BRANCH_SET_AS_DEFAULT_INDEX = data.current;
+                    BRANCH_SET_AS_DEFAULT = data.branches[data.current].name;
                     branchesSelect.items = data.branches;
-                    branchesSelect.setButtonLabel(data.branches[data.current].name);
+                    branchesSelect.setButtonLabel(BRANCH_SET_AS_DEFAULT);
+                    __debug('[brackets-githubnfo] current used branch  ' + BRANCH_SET_AS_DEFAULT);
                 }).fail(function (err) {
-                    // $("#githubnfo").addClass('error');
-                    console.error('[brackets-githubnfo] failed to run git.getBranches :: ' + err);
+                    // console.log('[brackets-githubnfo] failed to run git.getBranches :: ' + err);
                 });
         }
     }
@@ -94,6 +86,7 @@ define(function (require, exports, module) {
      *
      */
     function _init() {
+        __debug('[brackets-githubnfo] init');
         var  $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
         $parent.before(Mustache.render(GithubnfoButtonHTML, Strings));
 
@@ -114,6 +107,7 @@ define(function (require, exports, module) {
     // Log memory when extension is loaded
     AppInit.htmlReady(_init);
     AppInit.appReady(function () {
+        __debug('[brackets-githubnfo] ready');
         _populateBranchDropdown();
     });
 });
