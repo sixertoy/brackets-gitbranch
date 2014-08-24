@@ -87,7 +87,7 @@ define(function (require, exports, module) {
      *
      */
     function _populateBranchDropdown() {
-        __debug('[brackets-githubnfo] app ready');
+        __debug('[brackets-githubnfo] app _populateBranchDropdown');
         if (projectPath !== null) {
             gitDomain.exec('getBranches', projectPath)
                 .done(function (data) {
@@ -95,15 +95,30 @@ define(function (require, exports, module) {
                     BRANCH_SET_AS_DEFAULT = data.branches[data.current].name;
                     branchesSelect.items = data.branches;
                     branchesSelect.setButtonLabel(BRANCH_SET_AS_DEFAULT);
+                    __debug('[brackets-githubnfo] current used branch ' + BRANCH_SET_AS_DEFAULT);
+                }).fail(function (data) {
+                    if (DEBUG_MODE) {
+                        Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
+                    }
+                    __debug('[brackets-githubnfo] ' + data.title + ' :: ' + data.message);
+                });
+        }
+    }
+
+    function _getRemoteURL(){
+        __debug('[brackets-githubnfo] app ready');
+        if (projectPath !== null) {
+            gitDomain.exec('getOrigin', projectPath)
+                .done(function(url){
+                    console.log(url);
                     branchesSelect.$button.show();
                     $('#githubnfo').addClass('active');
                     $('#githubnfo a.icon')
-                        .attr('title', 'Open in Github')
-                        .attr('href', 'http://www.google.fr');
-                    __debug('[brackets-githubnfo] current used branch ' + BRANCH_SET_AS_DEFAULT);
+                        .attr('title', Strings.OPEN_IN_GITHUB)
+                        .attr('href', url);
+                    _populateBranchDropdown();
                 }).fail(function (data) {
-                    console.log(data);
-                    if(DEBUG_MODE){
+                    if (DEBUG_MODE) {
                         Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
                     }
                     __debug('[brackets-githubnfo] ' + data.title + ' :: ' + data.message);
@@ -121,7 +136,7 @@ define(function (require, exports, module) {
     function _init() {
         __debug('[brackets-githubnfo] app init');
         var  $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
-        $parent.before(Mustache.render(GithubnfoButtonHTML, Strings));
+        $parent.before(Mustache.render(GithubnfoButtonHTML, {'label': Strings.GIT_UNAVAILABLE}));
 
         branchesSelect = new DropdownButton('', [], function (item, index) {
             var html = _.escape(item.name);
@@ -140,5 +155,5 @@ define(function (require, exports, module) {
 
     // Log memory when extension is loaded
     AppInit.htmlReady(_init);
-    AppInit.appReady(_populateBranchDropdown);
+    AppInit.appReady(_getRemoteURL);
 });

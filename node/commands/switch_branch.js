@@ -62,7 +62,7 @@
 
     function _callback(err, stdout, stderr) {
         if (err !== null) {
-            return syncCallback({'title': 'git checkout ' + branchID + ' error', 'message': stderr, 'code':0}, null);
+            return syncCallback({'title': 'git checkout ' + branchID + ' error', 'message': stderr, 'code': 0}, null);
         } else {
             return syncCallback(null, true);
         }
@@ -80,7 +80,7 @@
                 return;
             }
         } catch (e) {}
-        var err = {'title': 'git checkout ' + branchID + ' error', 'message': 'No such file or directory ' + file, 'code':1};
+        var err = {'title': 'git checkout ' + branchID + ' error', 'message': 'No such file or directory ' + file, 'code': 1};
         syncCallback(err, null);
     }
 

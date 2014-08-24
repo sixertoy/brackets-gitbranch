@@ -23,11 +23,12 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global require, console */
+/*global exports, require, console */
 (function () {
     'use strict';
-;
-    var getBranches = require('./commands/get_branches'),
+
+    var getOrigin = require('./commands/get_origin'),
+        getBranches = require('./commands/get_branches'),
         switchBranch = require('./commands/switch_branch');
 
     /**
@@ -41,6 +42,7 @@
                 minor: 1
             });
         }
+        getOrigin.register(domainManager, 'getOrigin');
         getBranches.register(domainManager, 'getBranches');
         switchBranch.register(domainManager, 'switchBranch');
     }

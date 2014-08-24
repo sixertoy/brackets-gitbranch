@@ -49,31 +49,17 @@
             description: 'Absolute path for the current project'
         }],
         result = [{
-            name: 'data',
-            type: 'object',
-            description: '{branches:[{name:"string"},{},...],current:int}'
+            name: 'url',
+            type: 'string',
+            description: 'Current remote URL'
         }],
-        description = 'A list of current local branches';
+        description = 'Return the current project\'s remote URL';
 
-    function _callback(err, stdout) {
+    function _callback(err, stdout, stderr) {
         if (err !== null) {
-            return syncCallback({'title': 'git branch error', 'err': err, 'message': stdout}, null);
+            return syncCallback({'title': 'git config --get remote.origin.url', 'err': err, 'message': stderr}, null);
         } else {
-            var i, v, res,
-                data = {branches: [], current: null};
-            res = stdout.split('\n').join(' ').split(' ');
-            for (i = 0; i < res.length; i++) {
-                v = res[i].trim();
-                if (v !== '' && v !== '*') {
-                    data.branches.push({
-                        name: v
-                    });
-                    if (res[i - 1].trim() === '*') {
-                        data.current = (data.branches.length - 1);
-                    }
-                }
-            }
-            return syncCallback(null, data);
+            return syncCallback(null, stdout);
         }
 
     }
@@ -86,11 +72,11 @@
         try {
             isDirectory = fs.statSync(file).isDirectory();
             if (isDirectory) {
-                exec('git branch', shellOptions, _callback);
+                exec('git config --get remote.origin.url', shellOptions, _callback);
                 return;
             }
         } catch (e) {}
-        var err = {'title': 'git branch error', 'message': 'No such file or directory ' + file, 'code': 1};
+        var err = {'title': 'git config --get remote.origin.url', 'message': 'No such file or directory ' + file, 'code': 1};
         syncCallback(err, null);
     }
 

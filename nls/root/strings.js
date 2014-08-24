@@ -26,8 +26,6 @@
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50 */
 /*global define */
 define({
-    "MENU_LABEL": "Extension",
-    "MENU_ITEM_LABEL": "My Extension…",
-    "DIALOG_TITLE": "Hello World",
-    "DIALOG_TEXT": "Hello from my extension!"
+    "GIT_UNAVAILABLE": "Git unavailable",
+    "OPEN_IN_GITHUB": "Open in Github"
 });
