@@ -5,19 +5,7 @@ module.exports = function (grunt) {
      */
     grunt.initConfig({
         pkg: grunt.file.readJSON('package.json'),
-        pkgServer: grunt.file.readJSON('pkg/pkg.bower.json'),
-        pkgServer: grunt.file.readJSON('pkg/pkg.server.json'),
-        pkgServer: grunt.file.readJSON('pkg/pkg.compress.json'),
-
-        connect: {
-            server: {
-                options: '<%= pkgServer.options %>'
-            }
-        },
-
-        qunit: {
-            files: ['test/**/*.html']
-        },
+        pkgCompress: grunt.file.readJSON('pkg/pkg.compress.json'),
 
         jshint: {
             options: {
@@ -42,22 +30,13 @@ module.exports = function (grunt) {
                     }
                 ]
             }
-        },
-
-        watch: {
-            files: ['<%= jshint.files %>'],
-            tasks: ['jshint', 'qunit']
         }
 
     });
 
-    grunt.loadNpmTasks('grunt-contrib-watch');
-    grunt.loadNpmTasks('grunt-contrib-qunit');
     grunt.loadNpmTasks('grunt-contrib-jshint');
-    grunt.loadNpmTasks('grunt-contrib-connect');
     grunt.loadNpmTasks('grunt-contrib-compress');
 
-    grunt.registerTask('test', ['jshint', 'qunit']);
-    grunt.registerTask('default', ['jshint', 'connect', 'watch']);
+    grunt.registerTask('default', ['jshint', 'compress']);
 
 };

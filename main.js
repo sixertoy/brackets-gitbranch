@@ -40,7 +40,7 @@ define(function (require, exports, module) {
         GithubnfoDialogHTML = require('text!htmlContent/GithubNFO_dialog.html'),
         GithubnfoButtonHTML = require('text!htmlContent/GithubNFO_button.html');
 
-    var DEBUG_MODE = true,
+    var DEBUG_MODE = false,
         BRANCH_SET_AS_DEFAULT = false,
         BRANCH_SET_AS_DEFAULT_INDEX = false;
 
@@ -55,7 +55,7 @@ define(function (require, exports, module) {
      */
     function __debug(msg) {
         if (DEBUG_MODE) {
-            console.log(msg);
+            console.log('[brackets-githubnfo] ' + msg);
         }
     }
 
@@ -70,13 +70,13 @@ define(function (require, exports, module) {
      * @params [Object] item
      */
     function _switchBranch(event, item) {
-        __debug('[brackets-githubnfo] branch switch ' + BRANCH_SET_AS_DEFAULT + ' > ' + item.name);
+        __debug('branch switch ' + BRANCH_SET_AS_DEFAULT + ' > ' + item.name);
         gitDomain.exec('switchBranch', projectPath, item.name)
             .done(function () {
                 // ProjectManager.refreshFileTree();
             })
             .fail(function (data) {
-                __debug('[brackets-githubnfo] ' + data.title + ' \n' + data.message);
+                __debug(data.title + ' \n' + data.message);
                 data.message = data.message.split('\n').join('<br>');
                 Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
             });
@@ -88,7 +88,7 @@ define(function (require, exports, module) {
      *
      */
     function _populateBranchDropdown() {
-        __debug('[brackets-githubnfo] app _populateBranchDropdown');
+        __debug('app _populateBranchDropdown');
         if (projectPath !== null) {
             gitDomain.exec('getBranches', projectPath)
                 .done(function (data) {
@@ -96,18 +96,18 @@ define(function (require, exports, module) {
                     BRANCH_SET_AS_DEFAULT = data.branches[data.current].name;
                     branchesSelect.items = data.branches;
                     branchesSelect.setButtonLabel(BRANCH_SET_AS_DEFAULT);
-                    __debug('[brackets-githubnfo] current used branch ' + BRANCH_SET_AS_DEFAULT);
+                    __debug('current used branch ' + BRANCH_SET_AS_DEFAULT);
                 }).fail(function (data) {
                     if (DEBUG_MODE) {
                         Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
                     }
-                    __debug('[brackets-githubnfo] ' + data.title + ' :: ' + data.message);
+                    __debug(data.title + ' :: ' + data.message);
                 });
         }
     }
 
     function _getRemoteURL() {
-        __debug('[brackets-githubnfo] app ready');
+        __debug('app ready');
         if (projectPath !== null) {
             gitDomain.exec('getOrigin', projectPath)
                 .done(function (url) {
@@ -122,7 +122,7 @@ define(function (require, exports, module) {
                     if (DEBUG_MODE) {
                         Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
                     }
-                    __debug('[brackets-githubnfo] ' + data.title + ' :: ' + data.message);
+                    __debug(data.title + ' :: ' + data.message);
                 });
         }
     }
@@ -135,8 +135,8 @@ define(function (require, exports, module) {
      *
      */
     function _init() {
-        __debug('[brackets-githubnfo] app init');
-        var  $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
+        __debug('app init');
+        var $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
         $parent.before(Mustache.render(GithubnfoButtonHTML, {'label': Strings.GIT_UNAVAILABLE}));
 
         branchesSelect = new DropdownButton('', [], function (item, index) {
