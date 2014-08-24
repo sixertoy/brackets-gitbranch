@@ -70,9 +70,8 @@
                         for( i = 0; i < result.length; i++ ){
                             v = result[i].trim();
                             if( v !== '' && v !== '*' ){
-                                if(result[i-1].trim() === '*' ) { data.current = v; }
-                                // else{ data.branches.push({name:v}); }
                                 data.branches.push({name:v});
+                                if(result[i-1].trim() === '*' ) { data.current = ( data.branches.length - 1 ); }
                             }
                         }
                         return errback(null, data);

@@ -8,98 +8,33 @@
 @dark:#444749;
 @darker:#3d3f41;
 
-#githubnfo{
-    *{
-        font-size:11px;
-        font-family:'SourceSansPro',Helvetica,Arial,"Meiryo UI","ＭＳ Ｐゴシック","MS PGothic",sans-serif;
-    }
-    margin:0;
-    padding:0 !important;
-    label{
-        padding-left:30px;
-        background:url(images/github_icon_white-15x15.png) no-repeat 8px center transparent !important;
-    }
-    button{
-        color:@blue;
-    }
-    /*
-    button{
-        color:#FFF;
-        background-color:#444749;
-        background:url(images/github_icon-15x15.png) no-repeat 8px center transparent !important;
-        body.dark &{
-        b, strong{
-            display: inline-block;
-        }
-        strong{
-            color:#FFF;
-            padding:0 5px 0 0;
-        }
-        b{
-            color:#8fddff;
-        }
-    }
-    */
-}
 
-            /*background-color:#3d3f41;*/
-/*
-#githubnfo-list.githubnfo,
-#githubnfo-button.githubnfo{
-    *{
-        margin:0;
-        padding:0;
-    }
-    color:#FFF;
-    .btn{
-        text-decoration: none;
-        span{
-        }
-        strong{
-            body.dark &{
-                color:#FFF;
-            }
-        }
-    }
-    &.list{
-        position:absolute;
-        ul{
-            padding:10px 0;
-            background:#3d3f41;
-            list-style-type:none;
-            li{
-                width: 100%;
-                text-align: center;
-                background:#3d3f41;
-                a{
-                    width: 100%;
-                    padding:5px 0;
-                    display: block;
-                    overflow: hidden;
+.dropdownbutton-popup{
+    &.dropdown-github-branch{
+        margin-top:-6px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        li{
+            a{
+                .checked-branch{
+                    &:before{
+                        content:"✓";
+                        margin-left:-11px;
+                        margin-right:3px;
+                    }
                 }
             }
         }
     }
-    &.button{
-        overflow:hidden;
-        padding-left: 30px;
-        .btn{
-            width:80px;
-            margin-left:5px;
-            text-align: center;
-            background:#3d3f41;
-            display: inline-block;
+}
+
+#status-indicators{
+    #githubnfo{
+        margin:0;
+        padding:0 0 0 20px !important;
+        background:url( images/github_icon_white-15x15.png ) no-repeat 5px center transparent;
+        .btn-status-bar{
+            color:@blue;
         }
     }
 }
-
-#githubnfo-list.githubnfo{
-    bottom:-25px;
-    position: absolute;
-    transition:bottom 0.3s linear 0s;
-    a:hover{
-        color:#FFF;
-        background:#444749;
-    }
-}
-*/
