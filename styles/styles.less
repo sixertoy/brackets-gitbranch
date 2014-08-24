@@ -28,13 +28,28 @@
     }
 }
 
-#status-indicators{
-    #githubnfo{
-        margin:0;
-        padding:0 0 0 20px !important;
-        background:url( images/github_icon_white-15x15.png ) no-repeat 5px center transparent;
-        .btn-status-bar{
-            color:@blue;
+body.dark{
+    #status-indicators{
+        #githubnfo{
+            margin:0;
+            padding:0 0 0 0 !important;
+            .btn-status-bar{
+                color:@blue;
+            }
+            a.icon{
+                &:hover, &:active{ text-decoration: none; }
+                width: 25px;
+                height: 25px;
+                cursor:default;
+                display: inline-block;
+                text-decoration: none;
+                background:url( images/github_icon_grey-15x15.png ) no-repeat 5px center transparent;
+            }
+            &.active a.icon{
+                width: 20px;
+                cursor:pointer;
+                background:url( images/github_icon_white-15x15.png ) no-repeat 5px center transparent;
+            }
         }
     }
 }

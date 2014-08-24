@@ -31,7 +31,7 @@
         exec = require('child_process').exec;
 
     var isDirectory,
-        errorCallback;
+        syncCallback;
 
     var shellOptions = {
         env: null,
@@ -51,13 +51,13 @@
         result = [{
             name: 'data',
             type: 'object',
-            description: '{branches:[],current:null}'
+            description: '{branches:[{name:"string"},{},...],current:int}'
         }],
-        description = 'Returns the total or free memory on the user\'s system in bytes';
+        description = 'A list of current local branches';
 
     function _callback(err, stdout) {
         if (err !== null) {
-            return errorCallback({msg: 'git branch error', err: err, output: stdout});
+            return syncCallback({'title': 'git branch error', 'err': err, 'message': stdout}, null);
         } else {
             var i, v, res,
                 data = {branches: [], current: null};
@@ -73,25 +73,25 @@
                     }
                 }
             }
-            return errorCallback(null, data);
+            return syncCallback(null, data);
         }
 
     }
 
 
-    function _execute(projectPath, errback) {
-        errorCallback = errback;
+    function _execute(projectPath, callback) {
+        syncCallback = callback;
         shellOptions.cwd = projectPath;
+        var file = shellOptions.cwd + '.git';
         try {
-            isDirectory = fs.statSync(shellOptions.cwd + '.git').isDirectory();
+            isDirectory = fs.statSync(file).isDirectory();
             if (isDirectory) {
                 exec('git branch', shellOptions, _callback);
-            } else {
-                throw new Error('Current project has no available Git repository');
+                return;
             }
-        } catch (e) {
-            throw new Error(e);
-        }
+        } catch (e) {}
+        var err = {'title': 'git branch error', 'message': 'No such file or directory ' + file, 'code':1};
+        syncCallback(err, null);
     }
 
     /*

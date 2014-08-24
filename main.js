@@ -95,12 +95,18 @@ define(function (require, exports, module) {
                     BRANCH_SET_AS_DEFAULT = data.branches[data.current].name;
                     branchesSelect.items = data.branches;
                     branchesSelect.setButtonLabel(BRANCH_SET_AS_DEFAULT);
+                    branchesSelect.$button.show();
+                    $('#githubnfo').addClass('active');
+                    $('#githubnfo a.icon')
+                        .attr('title', 'Open in Github')
+                        .attr('href', 'http://www.google.fr');
                     __debug('[brackets-githubnfo] current used branch ' + BRANCH_SET_AS_DEFAULT);
                 }).fail(function (data) {
-                    /*
-                    Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
-                    __debug('[brackets-githubnfo] ' + data.msg + ' :: ' + data.output);
-                    */
+                    console.log(data);
+                    if(DEBUG_MODE){
+                        Dialog.showModalDialogUsingTemplate(Mustache.render(GithubnfoDialogHTML, data));
+                    }
+                    __debug('[brackets-githubnfo] ' + data.title + ' :: ' + data.message);
                 });
         }
     }
@@ -124,10 +130,11 @@ define(function (require, exports, module) {
             }
             return html;
         });
-        branchesSelect.dropdownExtraClasses = "dropdown-github-branch";
-        branchesSelect.$button.addClass("btn-status-bar");
-        branchesSelect.$button.css("width", "auto");
         $(branchesSelect).on('select', _switchBranch);
+        branchesSelect.dropdownExtraClasses = "dropdown-github-branch";
+        branchesSelect.$button.addClass("btn-status-bar")
+            .css("width", "auto")
+            .hide();
         $("#githubnfo").append(branchesSelect.$button);
     }
 

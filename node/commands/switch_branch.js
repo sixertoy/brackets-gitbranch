@@ -32,7 +32,7 @@
 
     var branchID,
         isDirectory,
-        errorCallback;
+        syncCallback;
 
     var shellOptions = {
         env: null,
@@ -62,26 +62,26 @@
 
     function _callback(err, stdout, stderr) {
         if (err !== null) {
-            return errorCallback({'title': 'git checkout ' + branchID + ' error', 'message': stderr}, null);
+            return syncCallback({'title': 'git checkout ' + branchID + ' error', 'message': stderr, 'code':0}, null);
         } else {
-            return errorCallback(null, true);
+            return syncCallback(null, true);
         }
     }
 
-    function _execute(projectPath, id, errback) {
+    function _execute(projectPath, id, callback) {
         branchID = id;
-        errorCallback = errback;
+        syncCallback = callback;
         shellOptions.cwd = projectPath;
+        var file = shellOptions.cwd + '.git';
         try {
-            isDirectory = fs.statSync(shellOptions.cwd + '.git').isDirectory();
+            isDirectory = fs.statSync(file).isDirectory();
             if (isDirectory) {
                 exec(('git checkout ' + branchID), shellOptions, _callback);
-            } else {
-                throw new Error('Current project has no available Git repository');
+                return;
             }
-        } catch (e) {
-            throw new Error(e);
-        }
+        } catch (e) {}
+        var err = {'title': 'git checkout ' + branchID + ' error', 'message': 'No such file or directory ' + file, 'code':1};
+        syncCallback(err, null);
     }
 
     /*
