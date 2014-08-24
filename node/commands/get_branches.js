@@ -23,14 +23,15 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global require, console*/
+/*global exports, require, console*/
 (function () {
     'use strict';
 
     var fs = require('fs'),
         exec = require('child_process').exec;
 
-    var isDirectory;
+    var isDirectory,
+        errorCallback;
 
     var shellOptions = {
         env: null,
@@ -43,9 +44,9 @@
 
     var async = true,
         params = [{
-                type: 'string',
-                name: 'projectPath',
-                description: 'Absolute path for the current project'
+            type: 'string',
+            name: 'projectPath',
+            description: 'Absolute path for the current project'
         }],
         result = [{
             name: 'data',
@@ -54,33 +55,41 @@
         }],
         description = 'Returns the total or free memory on the user\'s system in bytes';
 
+    function _callback(err, stdout) {
+        if (err !== null) {
+            return errorCallback({msg: 'git branch error', err: err, output: stdout});
+        } else {
+            var i, v, res,
+                data = {branches: [], current: null};
+            res = stdout.split('\n').join(' ').split(' ');
+            for (i = 0; i < res.length; i++) {
+                v = res[i].trim();
+                if (v !== '' && v !== '*') {
+                    data.branches.push({
+                        name: v
+                    });
+                    if (res[i - 1].trim() === '*') {
+                        data.current = (data.branches.length - 1);
+                    }
+                }
+            }
+            return errorCallback(null, data);
+        }
+
+    }
+
 
     function _execute(projectPath, errback) {
-        var i, v, result,
-            data = {branches:[],current:null};
+        errorCallback = errback;
         shellOptions.cwd = projectPath;
-        try{
+        try {
             isDirectory = fs.statSync(shellOptions.cwd + '.git').isDirectory();
             if (isDirectory) {
-                exec('git branch', shellOptions, function (err, stdout) {
-                    if (err !== null) {
-                        return errback('git branch Command Error', null);
-                    } else {
-                        result = stdout.split('\n').join(' ').split(' ');
-                        for( i = 0; i < result.length; i++ ){
-                            v = result[i].trim();
-                            if( v !== '' && v !== '*' ){
-                                data.branches.push({name:v});
-                                if(result[i-1].trim() === '*' ) { data.current = ( data.branches.length - 1 ); }
-                            }
-                        }
-                        return errback(null, data);
-                    }
-                });
+                exec('git branch', shellOptions, _callback);
             } else {
                 throw new Error('Current project has no available Git repository');
             }
-        }catch(e){
+        } catch (e) {
             throw new Error(e);
         }
     }
@@ -89,8 +98,8 @@
         var ;
         var ;
         */
-    function register(domainManager){
-        domainManager.registerCommand('git', 'getBranches', _execute, async, description, params, result);
+    function register(domainManager, command) {
+        domainManager.registerCommand('git', command, _execute, async, description, params, result);
     }
 
     exports.register = register;

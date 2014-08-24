@@ -41,8 +41,8 @@
                 minor: 1
             });
         }
-        getBranches.register(domainManager);
-        switchBranch.register(domainManager);
+        getBranches.register(domainManager, 'getBranches');
+        switchBranch.register(domainManager, 'switchBranch');
     }
 
     exports.init = init;
