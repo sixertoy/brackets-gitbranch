@@ -27,64 +27,128 @@
 define(function (require, exports, module) {
     'use strict';
 
-    var AppInit = brackets.getModule('utils/AppInit'),
+
+    /*
+    EditorManager.focusEditor();
+
+    */
+
+    var _ = brackets.getModule("thirdparty/lodash"),
+        AppInit = brackets.getModule('utils/AppInit'),
+        StatusBar = brackets.getModule("widgets/StatusBar"),
         NodeDomain = brackets.getModule('utils/NodeDomain'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
-        ProjectManager = brackets.getModule('project/ProjectManager');
+        ProjectManager = brackets.getModule('project/ProjectManager'),
+        DropdownButton = brackets.getModule('widgets/DropdownButton').DropdownButton;
 
-    var ListUITemplate = require('text!htmlContent/GithubNFO_list.html'),
-        ButtonUITemplate = require('text!htmlContent/GithubNFO_button.html');
+    var Strings = require("strings"),
+        GithubnfoButtonHTML = require('text!htmlContent/GithubNFO_button.html');
 
-    var $content = $('body > .main-view > .content'),
-        $statusbar = $('#status-indicators .spinner'),
+    var BRANCH_SET_AS_DEFAULT = false;
+
+    var branchesSelect,
         gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
 
-    ExtensionUtils.loadStyleSheet(module, "styles/styles.css");
+    ExtensionUtils.loadStyleSheet(module, 'styles/styles.css');
 
+
+    /*
+    function _switchBranch(num) {
+        console.log('[brackets-githubnfo] APP :: getGitBranches');
+        var projectPath = ProjectManager.getInitialProjectPath();
+        if (projectPath !== null) {
+            gitDomain.exec('switchBranches', num).done(function (branches) {}).fail(function (err) {});
+        }
+    }
+    */
+
+    /*
     function _createEtensionUI(branches) {
+
         $(Mustache.render(ButtonUITemplate, {
             'current': branches.current
         }))
             .insertBefore($statusbar);
+
         $(Mustache.render(ListUITemplate, {
             'branches': branches.branches
         }))
             .appendTo($content);
+        var $list = $('#githubnfo-list');
         var $button = $('#githubnfo-button a');
-        var $list = $('#githubnfo-list').css({
+        $list.css({
             'width': ($button.width() + 'px'),
-            'bottom':('-' + $('#githubnfo-list').height() + 'px' ),
-            'left': (($button.position().left + $('#status-indicators').position().left) + 'px')
+            'bottom': ('-' + $list.height() + 'px')
         });
         $button.on('click', function (event) {
             event.preventDefault();
             event.stopImmediatePropagation();
-            $('#githubnfo-list').css({
-                'bottom': ($button.height() + 'px')
-            });
+            $list.css({
+                'bottom': ($button.height() + 'px'),
+                'left': (($button.position().left + $('#status-indicators').position().left) + 'px')
+            }).addClass('open');
         });
+        $('#githubnfo-list a').on('click', function (event) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+            _switchBranch($(this).attr('href'));
+        });
+        $('body').on('click', function () {
+            if ($list.hasClass('open')) {
+                $list.removeClass('open').css({
+                    'bottom': ('-' + $list.height() + 'px'),
+                    'left': (($button.position().left + $('#status-indicators').position().left) + 'px')
+                }).addClass('open');
+            }
+        });
+
     }
+    */
 
-
-    // Helper function that runs the simple.getBranches command and
-    // logs the result to the console
-    function getGitBranches() {
-        // console.log('[brackets-githubnfo] APP :: getGitBranches');
+    function _populateBranchDropdown() {
         var projectPath = ProjectManager.getInitialProjectPath();
         if (projectPath !== null) {
             gitDomain.exec('getBranches', projectPath)
-                .done(function (branches) {
-                    console.log('[brackets-githubnfo] git.getBranches success');
-                    _createEtensionUI(branches);
+                .done(function (data) {
+                    BRANCH_SET_AS_DEFAULT = data.current;
+                    branchesSelect.items = data.branches;
+                    branchesSelect.setButtonLabel(BRANCH_SET_AS_DEFAULT);
                 }).fail(function (err) {
+                    // $("#githubnfo").addClass('error');
                     console.error('[brackets-githubnfo] failed to run git.getBranches :: ' + err);
                 });
         }
     }
 
+    /**
+     *
+     * Init de la vue de l'extension
+     *
+     */
+    function _init() {
+        var  $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
+        $parent.before(Mustache.render(GithubnfoButtonHTML, Strings));
+
+        branchesSelect = new DropdownButton('', [], function (item, index) {
+            var html = _.escape(item.name);
+            /*
+            if (item.name === BRANCH_SET_AS_DEFAULT) {
+                html = "<span class='checked-branch'></span>" + html;
+            }
+            */
+            return html;
+        });
+        branchesSelect.dropdownExtraClasses = "dropdown-github-branch";
+        branchesSelect.$button.addClass("btn-status-bar");
+        $("#githubnfo").append(branchesSelect.$button);
+    }
+
     // Log memory when extension is loaded
+    AppInit.htmlReady(_init);
     AppInit.appReady(function () {
         // console.log('[brackets-githubnfo] APP :: appReady');
-        getGitBranches();
+        //_createDropDownButton();
+        _populateBranchDropdown();
+        // on('brancheChanged', _populateBranchDropdown);
     });
 });

@@ -2,7 +2,48 @@
 /*
  * Place CSS here
  */
-body.dark{}
+@red:#d73737;
+@blue:#8fddff;
+@grey:#999580;
+@dark:#444749;
+@darker:#3d3f41;
+
+#githubnfo{
+    *{
+        font-size:11px;
+        font-family:'SourceSansPro',Helvetica,Arial,"Meiryo UI","ＭＳ Ｐゴシック","MS PGothic",sans-serif;
+    }
+    margin:0;
+    padding:0 !important;
+    label{
+        padding-left:30px;
+        background:url(images/github_icon_white-15x15.png) no-repeat 8px center transparent !important;
+    }
+    button{
+        color:@blue;
+    }
+    /*
+    button{
+        color:#FFF;
+        background-color:#444749;
+        background:url(images/github_icon-15x15.png) no-repeat 8px center transparent !important;
+        body.dark &{
+        b, strong{
+            display: inline-block;
+        }
+        strong{
+            color:#FFF;
+            padding:0 5px 0 0;
+        }
+        b{
+            color:#8fddff;
+        }
+    }
+    */
+}
+
+            /*background-color:#3d3f41;*/
+/*
 #githubnfo-list.githubnfo,
 #githubnfo-button.githubnfo{
     *{
@@ -10,16 +51,14 @@ body.dark{}
         padding:0;
     }
     color:#FFF;
-    body.dark &{
-        background:#444749;
-    }
-    a{
-        color:#8fddff;
+    .btn{
         text-decoration: none;
-    }
-    strong{
-        body.dark &{
-            color:#FFF;
+        span{
+        }
+        strong{
+            body.dark &{
+                color:#FFF;
+            }
         }
     }
     &.list{
@@ -44,10 +83,7 @@ body.dark{}
     &.button{
         overflow:hidden;
         padding-left: 30px;
-        body.dark &{
-            background:url(images/github_icon-15x15.png) no-repeat 8px center transparent !important;
-        }
-        a{
+        .btn{
             width:80px;
             margin-left:5px;
             text-align: center;
@@ -66,3 +102,4 @@ body.dark{}
         background:#444749;
     }
 }
+*/

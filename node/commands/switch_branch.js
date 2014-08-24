@@ -44,8 +44,8 @@
     var async = true,
         params = [{
                 type: 'string',
-                name: 'projectPath',
-                description: 'Absolute path for the current project'
+                name: 'id',
+                description: 'Branch name'
         }],
         result = [{
             name: 'result',
@@ -55,8 +55,36 @@
         description = 'Returns the total or free memory on the user\'s system in bytes';
 
 
-    function _execute(projectPath, errback) {
-        return 'yo';
+    function _execute(id, errback) {
+        /*
+        var i, v, result,
+            data = {branches:[],current:null};
+        shellOptions.cwd = projectPath;
+        try{
+            isDirectory = fs.statSync(shellOptions.cwd + '.git').isDirectory();
+            if (isDirectory) {
+                exec(('git checkout ' + id ), shellOptions, function (err, stdout) {
+                    if (err !== null) {
+                        return errback('git branch Command Error', null);
+                    } else {
+                        result = stdout.split('\n').join(' ').split(' ');
+                        for( i = 0; i < result.length; i++ ){
+                            v = result[i].trim();
+                            if( v !== '' && v !== '*' ){
+                                if(result[i-1].trim() === '*' ) { data.current = v; }
+                                else{ data.branches.push({name:v}); }
+                            }
+                        }
+                        return errback(null, data);
+                    }
+                });
+            } else {
+                throw new Error('Current project has no available Git repository');
+            }
+        }catch(e){
+            throw new Error(e);
+        }
+        */
     }
 
     /*
