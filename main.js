@@ -111,7 +111,6 @@ define(function (require, exports, module) {
         if (projectPath !== null) {
             gitDomain.exec('getOrigin', projectPath)
                 .done(function (url) {
-                    console.log(url);
                     branchesSelect.$button.show();
                     $('#githubnfo').addClass('active');
                     $('#githubnfo a.icon')
