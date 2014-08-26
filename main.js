@@ -33,6 +33,7 @@ define(function (require, exports, module) {
         NodeDomain = brackets.getModule('utils/NodeDomain'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
         ProjectManager = brackets.getModule('project/ProjectManager'),
+        PreferencesManager = brackets.getModule('preferences/PreferencesManager'),
         DropdownButton = brackets.getModule('widgets/DropdownButton').DropdownButton;
 
     var projectPath,
@@ -45,6 +46,7 @@ define(function (require, exports, module) {
         BRANCH_SET_AS_DEFAULT_INDEX = false;
 
     var branchesSelect,
+        preferences = PreferencesManager.getPreferenceStorage("extensions.Themes-for-brackets"),
         gitDomain = new NodeDomain('git', ExtensionUtils.getModulePath(module, 'node/GitDomain'));
 
     /**
