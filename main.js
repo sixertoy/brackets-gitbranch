@@ -23,25 +23,42 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global $, define, brackets, Mustache */
+/*global $, define, brackets, Mustache, process */
 define(function (require, exports, module) {
     'use strict';
 
-    var AppInit = require(''),
-        GitNFO = require('./lib/brackets-githubnfo.js');
+    var _ = brackets.getModule('thirdparty/lodash'),
+        AppInit = brackets.getModule('utils/AppInit'),
+        ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
+        ProjectManager = brackets.getModule('project/ProjectManager'),
+        DropdownButton = brackets.getModule('widgets/DropdownButton').DropdownButton;
 
-    AppInit.htmlReady(function(){
-        /*
+    var Strings = require('strings'),
+        ButtonHTML = require('text!htmlContent/button.html'),
+        DialogHTML = require('text!htmlContent/dialog.html');
+    ExtensionUtils.loadStyleSheet(module, 'styles/styles.css');
+
+    var Helper = require('./lib/brackets-githubnfo');
+
+    var _helper = null,
+        _module = module;
+
+    AppInit.htmlReady(function () {
+
         var $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
-        $parent.before(Mustache.render(GithubnfoButtonHTML, {'label': Strings.GIT_UNAVAILABLE}));
+        $parent.before(Mustache.render(ButtonHTML, {
+            'label': Strings.UNAVAILABLE
+        }));
 
-        branchesSelect = new DropdownButton('', [], function (item, index) {
+        var Select = new DropdownButton('', [], function (item, index) {
             var html = _.escape(item.name);
-            if (index === BRANCH_SET_AS_DEFAULT_INDEX) {
+            if (index === 0) {
                 html = '<span class="checked-branch"></span>' + html;
             }
             return html;
         });
+
+        /*
         $(branchesSelect).on('select', _switchBranch);
         branchesSelect.dropdownExtraClasses = 'dropdown-github-branch';
         branchesSelect.$button.addClass('btn-status-bar')
@@ -49,12 +66,12 @@ define(function (require, exports, module) {
             .hide();
         $('#githubnfo').append(branchesSelect.$button);
         */
+
     });
 
     AppInit.appReady(function () {
-        // _onProjectOpen();
-        // $(ProjectManager).on('projectClose', function () {});
-        // $(ProjectManager).on('projectOpen projectRefresh', _onProjectOpen);
+        _helper = new Helper(ProjectManager);
+        _helper.onAppReady();
     });
 
 
