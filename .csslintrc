@@ -1,0 +1,12 @@
+{
+    "import": false,
+    "box-model": false,
+    "important": false,
+    "important": false,
+    "text-indent": false,
+    "outline-none": false,
+    "adjoining-classes": false,
+    "overqualified-elements": false,
+    "compatible-vendor-prefixes": false,
+    "duplicate-background-images": false
+}
