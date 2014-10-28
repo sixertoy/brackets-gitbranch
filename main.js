@@ -71,6 +71,9 @@ define(function (require, exports, module) {
 
     AppInit.appReady(function () {
         _helper = new Helper(ProjectManager);
+        $(_helper).on('brackets-githubnfo.get-origin', function(event, url){
+            // console.log(url);
+        });
         _helper.onAppReady();
     });
 
