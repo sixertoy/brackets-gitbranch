@@ -1,9 +1,0 @@
-{
-    "jscodehints.detectedExclusions": [
-        "D:/www/__github__/brackets-githubnfo/node/GitDomain.js",
-        "D:/www/__github__/brackets-githubnfo/node/commands/get_branches.js",
-        "D:/www/__github__/brackets-githubnfo/node/commands/get_origin.js",
-        "D:/www/__github__/brackets-githubnfo/node/commands/switch_branch.js",
-        "D:/www/__github__/brackets-githubnfo/nls/strings.js"
-    ]
-}

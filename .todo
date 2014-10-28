@@ -1,6 +1,0 @@
-{
-    "search": {
-        "scope": "project",
-        "excludeFolders": ['/node_modules','/bower_components','node/node_modules','node/bower_components','/dumps','/packages']
-    }
-}
