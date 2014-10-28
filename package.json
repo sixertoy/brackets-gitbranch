@@ -1,7 +1,7 @@
 {
   "name": "brackets-githubnfo",
   "version": "2.1.0",
-  "description": "",
+  "description": "Swicth project's git branch from brackets",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
