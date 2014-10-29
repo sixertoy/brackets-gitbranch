@@ -41,7 +41,8 @@ define(function (require, exports, module) {
     var Helper = require('./lib/brackets-githubnfo');
 
     var _helper = null,
-        _module = module;
+        _module = module,
+        _dropdown = null;
 
     AppInit.htmlReady(function () {
 
@@ -50,29 +51,42 @@ define(function (require, exports, module) {
             'label': Strings.UNAVAILABLE
         }));
 
-        var Select = new DropdownButton('', [], function (item, index) {
+        _dropdown = new DropdownButton('', [], function (item, index) {
             var html = _.escape(item.name);
             if (index === 0) {
                 html = '<span class="checked-branch"></span>' + html;
             }
             return html;
         });
-
-        /*
-        $(branchesSelect).on('select', _switchBranch);
-        branchesSelect.dropdownExtraClasses = 'dropdown-github-branch';
-        branchesSelect.$button.addClass('btn-status-bar')
-            .css('width', 'auto')
-            .hide();
-        $('#githubnfo').append(branchesSelect.$button);
-        */
+        _dropdown.dropdownExtraClasses = 'dropdown-github-branch';
+        _dropdown.$button.addClass('btn-status-bar').css('width', 'auto').hide();
+        $('#githubnfo').append(_dropdown.$button);
 
     });
 
     AppInit.appReady(function () {
-        _helper = new Helper(ProjectManager);
-        $(_helper).on('brackets-githubnfo.get-origin', function(event, url){
-            // console.log(url);
+        _helper = new Helper(ProjectManager, _dropdown);
+
+        /**
+         *
+         *
+         *
+         */
+        $(_helper).on('brackets-githubnfo.get-origin', function (event, url) {
+            if (url) {
+                $('#githubnfo').addClass('active');
+                $('#githubnfo a.icon')
+                    .attr('title', Strings.OPEN_IN_GITHUB)
+                    .attr('href', url);
+                _dropdown.$button.show();
+                //
+            } else {
+                console.log('Current project has no git repository');
+                $('#githubnfo').removeClass('active');
+                _dropdown.$button.hide();
+                //
+            }
+
         });
         _helper.onAppReady();
     });

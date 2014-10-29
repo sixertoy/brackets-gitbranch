@@ -38,13 +38,11 @@
         killSignal: 'SIGTERM'
     };
 
-    var command = 'git branch -l --no-color';
-
     var error = {
         'code': 1,
         'err': null,
         'message': 'Unable to execute command',
-        'title': command
+        'title': 'git rev-parse --abbrev-ref HEAD'
     };
 
     var async = true,
@@ -54,11 +52,11 @@
             description: 'Absolute path for the current project'
         }],
         result = [{
-            name: 'branches',
-            type: 'array',
-            description: 'Array of branches'
+            name: 'url',
+            type: 'string',
+            description: 'Current remote URL'
         }],
-        description = 'Get all branches of a git repository';
+        description = 'Return the current project\'s remote URL';
 
     /**
      *
@@ -68,12 +66,11 @@
     function _execute(path, cb) {
         shellOptions.cwd = path;
         try {
-            Exec(command, shellOptions, function (err, stdout, stderr) {
+            Exec('git rev-parse --abbrev-ref HEAD', shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(error, null);
                 } else {
-                    var res = stdout;
-                    return cb(null, res);
+                    return cb(null, stdout);
                 }
             });
         } catch (e) {
@@ -87,13 +84,13 @@
      *
      */
     function init(domainManager) {
-        if (!domainManager.hasDomain('git-branches')) {
-            domainManager.registerDomain('git-branches', {
+        if (!domainManager.hasDomain('git-current')) {
+            domainManager.registerDomain('git-current', {
                 major: 0,
                 minor: 1
             });
         }
-        domainManager.registerCommand('git-branches', 'get', _execute, async, description, params, result);
+        domainManager.registerCommand('git-current', 'get', _execute, async, description, params, result);
     }
 
     exports.init = init;
