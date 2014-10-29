@@ -53,9 +53,6 @@ define(function (require, exports, module) {
 
         _dropdown = new DropdownButton('', [], function (item, index) {
             var html = _.escape(item.name);
-            if (index === 0) {
-                html = '<span class="checked-branch"></span>' + html;
-            }
             return html;
         });
         _dropdown.dropdownExtraClasses = 'dropdown-github-branch';
@@ -72,17 +69,22 @@ define(function (require, exports, module) {
          *
          *
          */
-        $(_helper).on('brackets-githubnfo.get-origin', function (event, url) {
+        $(_helper).on('brackets-githubnfo.populate', function (event, url, current, branches) {
             if (url) {
                 $('#githubnfo').addClass('active');
                 $('#githubnfo a.icon')
                     .attr('title', Strings.OPEN_IN_GITHUB)
                     .attr('href', url);
                 _dropdown.$button.show();
+                _dropdown.items = branches;
+                _dropdown.setButtonLabel(current);
                 //
             } else {
                 console.log('Current project has no git repository');
                 $('#githubnfo').removeClass('active');
+                $('#githubnfo a.icon')
+                    .attr('title', Strings.UNAVAILABLE)
+                    .attr('href', '#');
                 _dropdown.$button.hide();
                 //
             }

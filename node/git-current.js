@@ -52,11 +52,11 @@
             description: 'Absolute path for the current project'
         }],
         result = [{
-            name: 'url',
-            type: 'string',
-            description: 'Current remote URL'
+            name: 'current',
+            type: 'array',
+            description: 'Name of the current branch'
         }],
-        description = 'Return the current project\'s remote URL';
+        description = 'Get current branch of a local git repository';
 
     /**
      *
@@ -64,13 +64,16 @@
      *
      */
     function _execute(path, cb) {
+        var res,
+            reg = new RegExp("[\r\n]+", "g");
         shellOptions.cwd = path;
         try {
             Exec('git rev-parse --abbrev-ref HEAD', shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(error, null);
                 } else {
-                    return cb(null, stdout);
+                    res = String(stdout).split(reg).join('');
+                    return cb(null, res);
                 }
             });
         } catch (e) {

@@ -58,7 +58,7 @@
             type: 'array',
             description: 'Array of branches'
         }],
-        description = 'Get all branches of a git repository';
+        description = 'Get all branches of a local git repository';
 
     /**
      *
@@ -66,13 +66,18 @@
      *
      */
     function _execute(path, cb) {
+        var i, res,
+            reg = new RegExp("[\r\n]+", "g");
         shellOptions.cwd = path;
         try {
             Exec(command, shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(error, null);
                 } else {
-                    var res = stdout;
+                    res = stdout.split(reg);
+                    res.map(function(item, index){
+                        res[index] = String(item).trim();
+                    });
                     return cb(null, res);
                 }
             });
