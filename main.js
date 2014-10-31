@@ -29,6 +29,7 @@ define(function (require, exports, module) {
 
     var _ = brackets.getModule('thirdparty/lodash'),
         AppInit = brackets.getModule('utils/AppInit'),
+        FileSystem = brackets.getModule('filesystem/FileSystem'),
         ExtensionUtils = brackets.getModule('utils/ExtensionUtils'),
         ProjectManager = brackets.getModule('project/ProjectManager'),
         DropdownButton = brackets.getModule('widgets/DropdownButton').DropdownButton;
@@ -44,13 +45,16 @@ define(function (require, exports, module) {
         _module = module,
         _dropdown = null;
 
+    /**
+     *
+     *
+     *
+     */
     AppInit.htmlReady(function () {
-
         var $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
         $parent.before(Mustache.render(ButtonHTML, {
             'label': Strings.UNAVAILABLE
         }));
-
         _dropdown = new DropdownButton('', [], function (item, index) {
             var html = _.escape(item.name);
             return html;
@@ -58,13 +62,16 @@ define(function (require, exports, module) {
         _dropdown.dropdownExtraClasses = 'dropdown-github-branch';
         _dropdown.$button.addClass('btn-status-bar').css('width', 'auto').hide();
         $('#githubnfo').append(_dropdown.$button);
-
     });
 
+    /**
+     *
+     *
+     *
+     */
     AppInit.appReady(function () {
         _helper = new Helper(ProjectManager, _dropdown);
-
-        $(_helper).on('brackets-githubnfo.populate', function (event, url, current, branches) {
+        $(_helper).on('brackets-githubnfo.populate', function (event, url, current, root, branches) {
             if (url && !_.isBoolean(url)) {
                 $('#githubnfo').addClass('active');
                 $('#githubnfo a.icon')
@@ -73,11 +80,13 @@ define(function (require, exports, module) {
                 _dropdown.$button.show();
                 _dropdown.items = branches;
                 _dropdown.setButtonLabel(current);
+                _helper.watchRootChanges(root);
                 //
             } else if (url && _.isBoolean(url)) {
                 _dropdown.$button.show();
                 _dropdown.setButtonLabel(current);
                 _dropdown.$button.addClass('disabled');
+                _helper.watchRootChanges(root);
             } else {
                 console.log('Current project has no git repository');
                 $('#githubnfo').removeClass('active');

@@ -73,7 +73,7 @@
         try {
             Exec(command, shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
-                    return cb(error, null);
+                    return cb(stderr, null);
                 } else {
                     res = stdout.split(reg);
                     res.map(function (item, index) {

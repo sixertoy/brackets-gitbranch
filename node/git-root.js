@@ -27,7 +27,8 @@
 (function () {
     'use strict';
 
-    var Exec = require('child_process').exec;
+    var Path = require('path'),
+        Exec = require('child_process').exec;
 
     var shellOptions = {
         env: null,
@@ -38,11 +39,16 @@
         killSignal: 'SIGTERM'
     };
 
+    var commands = [
+        'git rev-parse --show-toplevel',
+        'git rev-parse --git-dir'
+    ];
+
     var error = {
         'code': 1,
         'err': null,
         'message': 'Unable to execute command',
-        'title': 'git rev-parse --abbrev-ref HEAD'
+        'title': commands[0]
     };
 
     var async = true,
@@ -52,11 +58,11 @@
             description: 'Absolute path for the current project'
         }],
         result = [{
-            name: 'current',
+            name: 'root',
             type: 'array',
-            description: 'Name of the current branch'
+            description: 'String'
         }],
-        description = 'Get current branch of a local git repository';
+        description = 'Get .git directory for current project';
 
     /**
      *
@@ -64,16 +70,23 @@
      *
      */
     function _execute(path, cb) {
-        var res,
-            reg = new RegExp("[\r\n]+", "g");
+        var base = '';
         shellOptions.cwd = path;
         try {
-            Exec('git rev-parse --abbrev-ref HEAD', shellOptions, function (err, stdout, stderr) {
+            Exec(commands[0], shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(stderr, null);
                 } else {
-                    res = String(stdout).split(reg).join('');
-                    return cb(null, res);
+                    base = stdout;
+                    Exec(commands[1], shellOptions, function (perr, pstdout, pstderr) {
+                        if (perr !== null) {
+                            return cb(pstderr, null);
+                        } else {
+                            var path = Path.join(Path.normalize(base), Path.normalize(pstdout), Path.sep);
+                            path = Path.normalize(path);
+                            return cb(null, path);
+                        }
+                    });
                 }
             });
         } catch (e) {
@@ -87,13 +100,13 @@
      *
      */
     function init(domainManager) {
-        if (!domainManager.hasDomain('git-current')) {
-            domainManager.registerDomain('git-current', {
+        if (!domainManager.hasDomain('git-root')) {
+            domainManager.registerDomain('git-root', {
                 major: 0,
                 minor: 1
             });
         }
-        domainManager.registerCommand('git-current', 'get', _execute, async, description, params, result);
+        domainManager.registerCommand('git-root', 'get', _execute, async, description, params, result);
     }
 
     exports.init = init;

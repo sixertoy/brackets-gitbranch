@@ -68,7 +68,7 @@
         try {
             Exec('git config --get remote.origin.url', shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
-                    return cb(error, null);
+                    return cb(stderr, null);
                 } else {
                     return cb(null, stdout);
                 }
