@@ -64,13 +64,8 @@ define(function (require, exports, module) {
     AppInit.appReady(function () {
         _helper = new Helper(ProjectManager, _dropdown);
 
-        /**
-         *
-         *
-         *
-         */
         $(_helper).on('brackets-githubnfo.populate', function (event, url, current, branches) {
-            if (url) {
+            if (url && !_.isBoolean(url)) {
                 $('#githubnfo').addClass('active');
                 $('#githubnfo a.icon')
                     .attr('title', Strings.OPEN_IN_GITHUB)
@@ -79,6 +74,10 @@ define(function (require, exports, module) {
                 _dropdown.items = branches;
                 _dropdown.setButtonLabel(current);
                 //
+            } else if (url && _.isBoolean(url)) {
+                _dropdown.$button.show();
+                _dropdown.setButtonLabel(current);
+                _dropdown.$button.addClass('disabled');
             } else {
                 console.log('Current project has no git repository');
                 $('#githubnfo').removeClass('active');

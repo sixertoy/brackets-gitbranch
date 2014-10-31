@@ -67,6 +67,7 @@
      */
     function _execute(path, cb) {
         var i, res,
+            r = [],
             reg = new RegExp("[\r\n]+", "g");
         shellOptions.cwd = path;
         try {
@@ -75,10 +76,12 @@
                     return cb(error, null);
                 } else {
                     res = stdout.split(reg);
-                    res.map(function(item, index){
-                        res[index] = String(item).trim();
+                    res.map(function (item, index) {
+                        if (String(item).trim() !== ''){
+                          r.push(String(item).trim());
+                        }
                     });
-                    return cb(null, res);
+                    return cb(null, r);
                 }
             });
         } catch (e) {
