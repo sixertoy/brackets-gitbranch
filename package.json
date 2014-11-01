@@ -1,5 +1,6 @@
 {
-  "name": "Brackets Git Branch",
+  "name": "brackets-git-branch",
+  "title": "Brackets Git Branch",
   "version": "2.1.0",
   "description": "Swicth project's git branch from brackets",
   "main": "main.js",
