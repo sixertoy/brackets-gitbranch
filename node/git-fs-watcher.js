@@ -61,14 +61,11 @@
         }];
 
     var _events = [{
-        name: "path",
-        type: "string"
+        name: "curr",
+        type: "object"
     }, {
-        name: "event",
-        type: "string"
-    }, {
-        name: "filename",
-        type: "string"
+        name: "prev",
+        type: "object"
     }];
 
     var _error = {
@@ -85,15 +82,17 @@
      */
     function watch(filePath, cb) {
         try {
-            var watcher;
+
             _filePath = filePath;
 
-            watcher = FS.watchFile(filePath, {
+            console.log(_filePath);
+
+            var watcher = FS.watchFile(filePath, {
                 persistent: false
             }, function (curr, prev) {
                 console.log('the current mtime is: ' + curr.mtime);
                 console.log('the previous mtime was: ' + prev.mtime);
-                watcher.emit('git-fs-watcher', 'change', curr, prev);
+                watcher.emitEvent(_domainName, 'change', curr, prev);
             });
 
             // _watcherMap[path] = watcher;
@@ -101,7 +100,6 @@
                 //console.error("Error watching file " + path + ": " + (err && err.message));
                 // unwatchPath(path);
             });
-
 
             cb(null, 'okkkkkk');
 
