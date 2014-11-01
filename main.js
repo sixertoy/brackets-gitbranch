@@ -80,13 +80,13 @@ define(function (require, exports, module) {
                 _dropdown.$button.show();
                 _dropdown.items = branches;
                 _dropdown.setButtonLabel(current);
-                _helper.watchRootChanges(root);
+                _helper.initWatchChanges(root);
                 //
             } else if (url && _.isBoolean(url)) {
                 _dropdown.$button.show();
                 _dropdown.setButtonLabel(current);
                 _dropdown.$button.addClass('disabled');
-                _helper.watchRootChanges(root);
+                _helper.initWatchChanges(root);
             } else {
                 console.log('Current project has no git repository');
                 $('#githubnfo').removeClass('active');
