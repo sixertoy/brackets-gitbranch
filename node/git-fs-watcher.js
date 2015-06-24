@@ -85,8 +85,6 @@
 
             _filePath = filePath;
 
-            console.log(_filePath);
-
             var watcher = FS.watchFile(filePath, {
                 persistent: false
             }, function (curr, prev) {
