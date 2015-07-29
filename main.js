@@ -47,11 +47,45 @@ define(function (require, exports, module) {
 
     /**
      *
+     * Disbale plugin
+     * IF
+     * project is not under version control
+     * error during project open process
+     *
+     */
+    function disable(event, err) {
+        console.log('Current project has no git repository: ' + err.message);
+        //
+        $('#sixertoy-gitbranch').removeClass('active');
+        $('#sixertoy-gitbranch a.icon')
+            .attr('title', Strings.UNAVAILABLE)
+            .attr('href', '#');
+        _dropdown.$button.hide();
+    }
+
+    /**
+     *
+     * Enable plugin
+     *
+     */
+    function enable(event, branches, current, url) {
+        $('#sixertoy-gitbranch').addClass('active');
+        $('#sixertoy-gitbranch a.icon')
+            .attr('title', Strings.OPEN_IN_GITHUB)
+            .attr('href', url);
+        _dropdown.$button.show();
+        _dropdown.items = branches;
+        _dropdown.setButtonLabel(branches[current].name);
+    }
+
+    /**
+     *
      *
      *
      */
     AppInit.htmlReady(function () {
-        var $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
+        var classes,
+            $parent = $('.main-view .content #status-bar #status-indicators #status-overwrite');
         $parent.before(Mustache.render(ButtonHTML, {
             'label': Strings.UNAVAILABLE
         }));
@@ -59,7 +93,8 @@ define(function (require, exports, module) {
             var html = _.escape(item.name);
             return html;
         });
-        _dropdown.dropdownExtraClasses = 'dropdown-sixertoy-gitbranch';
+        classes = ['dropdown-status-bar','dropdown-sixertoy-gitbranch'];
+        _dropdown.dropdownExtraClasses = classes.join(' ');
         _dropdown.$button.addClass('btn-status-bar').css('width', 'auto').hide();
         $('#sixertoy-gitbranch').append(_dropdown.$button);
     });
@@ -71,33 +106,8 @@ define(function (require, exports, module) {
      */
     AppInit.appReady(function () {
         _helper = new Helper(ProjectManager, _dropdown);
-        $(_helper).on('brackets-sixertoy-gitbranch.populate', function (event, url, current, root, branches) {
-            if (url && !_.isBoolean(url)) {
-                $('#sixertoy-gitbranch').addClass('active');
-                $('#sixertoy-gitbranch a.icon')
-                    .attr('title', Strings.OPEN_IN_GITHUB)
-                    .attr('href', url);
-                _dropdown.$button.show();
-                _dropdown.items = branches;
-                _dropdown.setButtonLabel(current);
-                _helper.initWatchChanges(root);
-                //
-            } else if (url && _.isBoolean(url)) {
-                _dropdown.$button.show();
-                _dropdown.setButtonLabel(current);
-                _dropdown.$button.addClass('disabled');
-                _helper.initWatchChanges(root);
-            } else {
-                console.log('Current project has no git repository');
-                $('#sixertoy-gitbranch').removeClass('active');
-                $('#sixertoy-gitbranch a.icon')
-                    .attr('title', Strings.UNAVAILABLE)
-                    .attr('href', '#');
-                _dropdown.$button.hide();
-                //
-            }
-
-        });
+        $(_helper).on('brackets-sixertoy-gitbranch.disable', disable);
+        $(_helper).on('brackets-sixertoy-gitbranch.enable', enable);
         _helper.onAppReady();
     });
 

@@ -27,8 +27,11 @@
 (function () {
     'use strict';
 
-    var Exec = require('child_process').exec;
+    var FS = require('fs'),
+        Path = require('path'),
+        exec = require('child_process').exec;
 
+    /*
     var shellOptions = {
         env: null,
         cwd: null,
@@ -38,62 +41,88 @@
         killSignal: 'SIGTERM'
     };
 
+    var commands = [
+        'git rev-parse --show-toplevel',
+        'git rev-parse --git-dir'
+    ];
+
     var error = {
         'code': 1,
         'err': null,
         'message': 'Unable to execute command',
-        'title': 'git rev-parse --abbrev-ref HEAD'
+        'title': commands[0]
     };
+    */
 
     var async = true,
-        params = [{
-            type: 'string',
-            name: 'projectPath',
-            description: 'Absolute path for the current project'
-        }],
-        result = [{
-            name: 'current',
-            type: 'array',
-            description: 'Name of the current branch'
-        }],
-        description = 'Get current branch of a local git repository';
+        params = [],
+        result = [],
+        description = 'NodeJS API Utils';
 
     /**
      *
      *
      *
      */
+    /*
     function _execute(path, cb) {
-        var res,
-            reg = new RegExp("[\r\n]+", "g");
+        var base = '';
         shellOptions.cwd = path;
         try {
-            Exec('git rev-parse --abbrev-ref HEAD', shellOptions, function (err, stdout, stderr) {
+            exec(commands[0], shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(stderr, null);
                 } else {
-                    res = String(stdout).split(reg).join('');
-                    return cb(null, res);
+                    base = stdout;
+                    exec(commands[1], shellOptions, function (perr, pstdout, pstderr) {
+                        if (perr !== null) {
+                            return cb(pstderr, null);
+                        } else {
+                            var path = Path.join(Path.normalize(base), Path.normalize(pstdout), Path.sep);
+                            path = Path.normalize(path);
+                            return cb(null, path);
+                        }
+                    });
                 }
             });
         } catch (e) {
             cb(error, null);
         }
     }
+    */
 
     /**
      *
+     * Verifie si projet
+     * est sur du versionning git
      *
+     */
+    function _isRepository(p, cb) {
+        var gitfolder = Path.join(p, '.git');
+        FS.stat(gitfolder, function (err, stats) {
+            if (err) {
+                return cb(err, null);
+            } else {
+                return cb(null, stats.isDirectory());
+            }
+        }, function (err) {
+            return cb(err, null);
+        });
+    }
+
+    /**
+     *
+     * Declaration des domaines
      *
      */
     function init(domainManager) {
-        if (!domainManager.hasDomain('git-current')) {
-            domainManager.registerDomain('git-current', {
+        if (!domainManager.hasDomain('node-utils')) {
+            domainManager.registerDomain('node-utils', {
                 major: 0,
                 minor: 1
             });
         }
-        domainManager.registerCommand('git-current', 'get', _execute, async, description, params, result);
+        domainManager.registerCommand('node-utils', 'isRepository', _isRepository, async, description, params, result);
     }
 
     exports.init = init;

@@ -27,7 +27,7 @@
 (function () {
     'use strict';
 
-    var Exec = require('child_process').exec;
+    var exec = require('child_process').exec;
 
     var shellOptions = {
         env: null,
@@ -48,16 +48,8 @@
     };
 
     var async = true,
-        params = [{
-            type: 'string',
-            name: 'projectPath',
-            description: 'Absolute path for the current project'
-        }],
-        result = [{
-            name: 'branches',
-            type: 'array',
-            description: 'Array of branches'
-        }],
+        params = [],
+        result = [],
         description = 'Get all branches of a local git repository';
 
     /**
@@ -71,14 +63,14 @@
             reg = new RegExp("[\r\n]+", "g");
         shellOptions.cwd = path;
         try {
-            Exec(command, shellOptions, function (err, stdout, stderr) {
+            exec(command, shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(stderr, null);
                 } else {
                     res = stdout.split(reg);
                     res.map(function (item, index) {
-                        if (String(item).trim() !== ''){
-                          r.push(String(item).trim());
+                        if (String(item).trim() !== '') {
+                            r.push(String(item).trim());
                         }
                     });
                     return cb(null, r);

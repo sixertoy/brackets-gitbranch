@@ -27,7 +27,7 @@
 (function () {
     'use strict';
 
-    var Exec = require('child_process').exec;
+    var exec = require('child_process').exec;
 
     var shellOptions = {
         env: null,
@@ -46,16 +46,8 @@
     };
 
     var async = true,
-        params = [{
-            type: 'string',
-            name: 'projectPath',
-            description: 'Absolute path for the current project'
-        }],
-        result = [{
-            name: 'url',
-            type: 'string',
-            description: 'Current remote URL'
-        }],
+        params = [],
+        result = [],
         description = 'Return the current project\'s remote URL';
 
     /**
@@ -66,7 +58,7 @@
     function _execute(path, cb) {
         shellOptions.cwd = path;
         try {
-            Exec('git config --get remote.origin.url', shellOptions, function (err, stdout, stderr) {
+            exec('git config --get remote.origin.url', shellOptions, function (err, stdout, stderr) {
                 if (err !== null) {
                     return cb(stderr, null);
                 } else {
