@@ -11,6 +11,29 @@
     "type": "git",
     "url": "https://github.com/malas34/brackets-githubnfo.git"
   },
+  "files": [
+    "styles/styles.css",
+    "styles/images/github_icon_red-15x15.png",
+    "styles/images/github_icon_grey-15x15.png",
+    "styles/images/github_icon_blue-15x15.png",
+    "styles/images/github_icon_white-15x15.png",
+    "nls/strings.js",
+    "nls/fr/strings.js",
+    "nls/root/strings.js",
+    "lib/brackets-gitbranch.js",
+    "htmlContent/button.html",
+    "htmlContent/dialog.html",
+    "node/git-branches.js",
+    "node/git-fs-watcher.js",
+    "node/git-origin.js",
+    "node/node-utils.js",
+    "LICENCE-MIT",
+    "main.js",
+    "package.json",
+    "README.md",
+    "screenshot.png",
+    "strings.jpg"
+  ],
   "keywords": [
     "brackets",
     "switch",
@@ -26,6 +49,7 @@
   "devDependencies": {
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
+    "grunt-contrib-compress": "^0.13.0",
     "grunt-contrib-less": "^1.0.1",
     "load-grunt-config": "^0.17.2"
   }
