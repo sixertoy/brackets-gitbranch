@@ -39,7 +39,7 @@ define(function (require, exports, module) {
         DialogHTML = require('text!htmlContent/dialog.html');
     ExtensionUtils.loadStyleSheet(module, 'styles/styles.css');
 
-    var Helper = require('./lib/brackets-githubnfo');
+    var Helper = require('./lib/brackets-gitbranch');
 
     var _helper = null,
         _module = module,
@@ -59,9 +59,9 @@ define(function (require, exports, module) {
             var html = _.escape(item.name);
             return html;
         });
-        _dropdown.dropdownExtraClasses = 'dropdown-github-branch';
+        _dropdown.dropdownExtraClasses = 'dropdown-sixertoy-gitbranch';
         _dropdown.$button.addClass('btn-status-bar').css('width', 'auto').hide();
-        $('#githubnfo').append(_dropdown.$button);
+        $('#sixertoy-gitbranch').append(_dropdown.$button);
     });
 
     /**
@@ -71,10 +71,10 @@ define(function (require, exports, module) {
      */
     AppInit.appReady(function () {
         _helper = new Helper(ProjectManager, _dropdown);
-        $(_helper).on('brackets-githubnfo.populate', function (event, url, current, root, branches) {
+        $(_helper).on('brackets-sixertoy-gitbranch.populate', function (event, url, current, root, branches) {
             if (url && !_.isBoolean(url)) {
-                $('#githubnfo').addClass('active');
-                $('#githubnfo a.icon')
+                $('#sixertoy-gitbranch').addClass('active');
+                $('#sixertoy-gitbranch a.icon')
                     .attr('title', Strings.OPEN_IN_GITHUB)
                     .attr('href', url);
                 _dropdown.$button.show();
@@ -89,8 +89,8 @@ define(function (require, exports, module) {
                 _helper.initWatchChanges(root);
             } else {
                 console.log('Current project has no git repository');
-                $('#githubnfo').removeClass('active');
-                $('#githubnfo a.icon')
+                $('#sixertoy-gitbranch').removeClass('active');
+                $('#sixertoy-gitbranch a.icon')
                     .attr('title', Strings.UNAVAILABLE)
                     .attr('href', '#');
                 _dropdown.$button.hide();
