@@ -59,10 +59,12 @@ define(function (require, exports, module) {
             .attr('title', Strings.UNAVAILABLE)
             .attr('href', '#');
         _dropdown.$button.hide();
-        //
-        console.log('Current project has no git repository');
-        if (err !== null && err.hasOwnProperty('message')) {
-            console.log(err.message);
+        console.log('gitbranch disabling plugin');
+        if (err !== null) {
+            console.log('gitbranch current project has no git repository');
+            if (err.hasOwnProperty('message')) {
+                console.log(err.message);
+            }
         }
     }
 
@@ -78,7 +80,13 @@ define(function (require, exports, module) {
             .attr('href', options.origin);
         _dropdown.$button.show();
         _dropdown.items = options.branches;
-        _dropdown.setButtonLabel(options.branches[options.index].name);
+        _dropdown.setButtonLabel(options.head);
+    }
+
+
+    function update(event, head){
+        console.log('update head');
+        _dropdown.setButtonLabel(head);
     }
 
     /**
@@ -110,6 +118,7 @@ define(function (require, exports, module) {
     AppInit.appReady(function () {
         _helper = new Helper(ProjectManager, _dropdown);
         $(_helper).on('brackets-sixertoy-gitbranch.disable', disable);
+        $(_helper).on('brackets-sixertoy-gitbranch.update', update);
         $(_helper).on('brackets-sixertoy-gitbranch.enable', enable);
         _helper.onAppReady();
     });

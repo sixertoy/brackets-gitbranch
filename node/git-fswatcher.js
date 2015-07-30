@@ -27,7 +27,7 @@
 (function () {
     'use strict';
 
-    var _watcher, _domainManager, _domainName,
+    var _watcher, _domainManager, _domainName, _headfile,
         params = [],
         result = [],
         async = true,
@@ -38,7 +38,13 @@
         chokidar = require('chokidar');
 
 
-    function unwatch() {
+    function unwatch(cb) {
+        try {
+            _watcher.unwatch(_headfile);
+            cb(null, true);
+        } catch (e) {
+            cb(e, false);
+        }
     }
 
     /**
@@ -47,20 +53,35 @@
      *
      */
     function watch(path, cb) {
-        try {
-            var file = Path.join(path, '.git', 'HEAD');
-            _watcher = chokidar.watch(file, {
-                persistent: true
-            });
-            _watcher.on('change', function (event) {
-                _domainManager.emitEvent(_domainName, _domainName + '.change', event);
-            });
-            cb(null, file);
-
-        } catch (err) {
-            cb(err, null);
-
-        }
+        var opts = {
+            flag: 'r',
+            encoding: 'utf8'
+        };
+        _headfile = Path.join(path, '.git', 'HEAD');
+        FS.stat(_headfile, function (err, stat) {
+            if (err !== null) {
+                _headfile = false;
+                cb(err, null);
+            } else {
+                if (stat.isFile()) {
+                    _watcher = chokidar.watch(_headfile, {
+                        persistent: true
+                    }).on('change', function (event) {
+                        FS.readFile(_headfile, opts, function(err, data){
+                            if(err !== null){
+                                _domainManager.emitEvent(_domainName, 'error', err);
+                            } else {
+                                _domainManager.emitEvent(_domainName, 'change', data);
+                            }
+                        })
+                    });
+                    cb(null, true);
+                } else {
+                    _headfile = false;
+                    cb(new Error('is not file'), null);
+                }
+            }
+        });
     }
 
     /**
@@ -76,7 +97,8 @@
                 minor: 1
             });
         }
-        domainManager.registerEvent(_domainName, _domainName + '.change', []);
+        domainManager.registerEvent(_domainName, 'error', []);
+        domainManager.registerEvent(_domainName, 'change', []);
         domainManager.registerCommand(_domainName, 'watch', watch, async, description, params, result);
         domainManager.registerCommand(_domainName, 'unwatch', unwatch, async, description, params, result);
         _domainManager = domainManager;
