@@ -53,7 +53,7 @@
                 persistent: true
             });
             _watcher.on('change', function (event) {
-                _domainManager.emitEvent(_domainName, 'git-fswatcher.change', event);
+                _domainManager.emitEvent(_domainName, _domainName + '.change', event);
             });
             cb(null, file);
 
@@ -76,7 +76,7 @@
                 minor: 1
             });
         }
-        domainManager.registerEvent(_domainName, 'git-fswatcher.change', []);
+        domainManager.registerEvent(_domainName, _domainName + '.change', []);
         domainManager.registerCommand(_domainName, 'watch', watch, async, description, params, result);
         domainManager.registerCommand(_domainName, 'unwatch', unwatch, async, description, params, result);
         _domainManager = domainManager;
