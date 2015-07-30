@@ -1,8 +1,8 @@
 {
   "name": "brackets-gitbranch",
   "title": "Brackets Git Branch",
-  "version": "3.0.2",
-  "description": "Show project's git branch in status Brackets status bar.Only tested on WNDOWS, not yet tested under UNIX. So if you find any bug please submit an issue ;)",
+  "version": "3.0.3",
+  "description": "Show project's git branch in status Brackets status bar. Only tested on WNDOWS, not yet tested under UNIX. So if you find any bug please submit an issue ;)",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,12 +27,12 @@
     "node/git-fswatcher.js",
     "node/git-origin.js",
     "node/node-utils.js",
-    "LICENCE-MIT",
+    "LICENSE-MIT",
     "main.js",
     "package.json",
     "README.md",
     "screenshot.png",
-    "strings.jpg"
+    "strings.js"
   ],
   "keywords": [
     "brackets",
