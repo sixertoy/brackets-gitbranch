@@ -195,5 +195,6 @@ node_modules
 ####################################
 ### Custom ###
 ####################################
-!node_modules/chokidar
+#!node_modules/chokidar
+!node_modules/node-watch
 
