@@ -76,7 +76,7 @@ $RECYCLE.BIN/
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
 
 # Thumbnails
 ._*
@@ -191,4 +191,9 @@ node_modules
 # Some versions of Finale have a bug and randomly save extra copies of
 # the music source as "<Filename> copy.mus"
 *copy.mus
+
+####################################
+### Custom ###
+####################################
+!node_modules/chokidar
 
