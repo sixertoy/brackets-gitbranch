@@ -23,57 +23,55 @@
  *
  */
 /*jslint vars: true, plusplus: true, devel: true, nomen: true, indent: 4, maxerr: 50, browser: true */
-/*global exports, require*/
+/*global exports, require, process*/
 (function () {
     'use strict';
 
-    var exec = require('child_process').exec,
+    var _watcher,
         params = [],
         result = [],
         async = true,
-        command = 'git branch -l --no-color',
-        description = 'Get all branches of a local git repository',
-        shellOptions = {
-            env: null,
-            cwd: null,
-            timeout: 0,
-            encoding: 'utf8',
-            maxBuffer: 200 * 1024,
-            killSignal: 'SIGTERM'
-        },
-        error = {
-            'code': 1,
-            'err': null,
-            'message': 'Unable to execute command',
-            'title': command
-        };
+        description = '',
+        // _filePath = null,
+        FS = require('fs'),
+        OS = require('os'),
+        Path = require('path'),
+        chokidar = require('chokidar');
 
     /**
      *
      *
      *
      */
-    function _execute(path, cb) {
-        var i, res,
-            r = [],
-            reg = new RegExp("[\r\n]+", "g");
-        shellOptions.cwd = path;
+    function watch(path, func, cb) {
         try {
-            exec(command, shellOptions, function (err, stdout, stderr) {
-                if (err !== null) {
-                    return cb(stderr, null);
-                } else {
-                    res = stdout.split(reg);
-                    res.map(function (item, index) {
-                        if (String(item).trim() !== '') {
-                            r.push(String(item).trim());
-                        }
-                    });
-                    return cb(null, r);
+            // init watcher
+            // sur le fichier .git/HEAD
+            /*
+            _watcher = FS.watch(file, {
+                recursive: false,
+                persistent: false
+            }, function (event, filename) {
+                switch (event) {
+                case 'rename':
+                    break;
+                case 'change':
+                    break;
                 }
             });
-        } catch (e) {
-            cb(error, null);
+            */
+            var file = Path.join(path, '.git', 'HEAD');
+            _watcher = chokidar.watch(file, {
+                persistent: true
+            });
+            _watcher.on('change', function (path) {
+                func('changed');
+            });
+            cb(null, file);
+
+        } catch (err) {
+            cb(err, null);
+
         }
     }
 
@@ -83,13 +81,15 @@
      *
      */
     function init(domainManager) {
-        if (!domainManager.hasDomain('git-branches')) {
-            domainManager.registerDomain('git-branches', {
+        if (!domainManager.hasDomain('git-fswatcher')) {
+            domainManager.registerDomain('git-fswatcher', {
                 major: 0,
                 minor: 1
             });
         }
-        domainManager.registerCommand('git-branches', 'get', _execute, async, description, params, result);
+        domainManager.registerCommand('git-fswatcher', 'watch', watch, async, description, params, result);
+        //domainManager.registerCommand(_domainName, 'unwatch', unwatch, _async, _description, _params, _result);
+        //domainManager.registerEvent(_domainName, 'change', _events);
     }
 
     exports.init = init;

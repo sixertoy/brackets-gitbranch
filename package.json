@@ -52,5 +52,8 @@
     "grunt-contrib-compress": "^0.13.0",
     "grunt-contrib-less": "^1.0.1",
     "load-grunt-config": "^0.17.2"
+  },
+  "dependencies": {
+    "chokidar": "^1.0.5"
   }
 }

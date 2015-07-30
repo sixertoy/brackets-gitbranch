@@ -54,13 +54,16 @@ define(function (require, exports, module) {
      *
      */
     function disable(event, err) {
-        console.log('Current project has no git repository: ' + err.message);
-        //
         $('#sixertoy-gitbranch').removeClass('active');
         $('#sixertoy-gitbranch a.icon')
             .attr('title', Strings.UNAVAILABLE)
             .attr('href', '#');
         _dropdown.$button.hide();
+        //
+        console.log('Current project has no git repository');
+        if (err !== null && err.hasOwnProperty('message')) {
+            console.log(err.message);
+        }
     }
 
     /**
@@ -68,14 +71,14 @@ define(function (require, exports, module) {
      * Enable plugin
      *
      */
-    function enable(event, branches, current, url) {
+    function enable(event, options) {
         $('#sixertoy-gitbranch').addClass('active');
         $('#sixertoy-gitbranch a.icon')
             .attr('title', Strings.OPEN_IN_GITHUB)
-            .attr('href', url);
+            .attr('href', options.origin);
         _dropdown.$button.show();
-        _dropdown.items = branches;
-        _dropdown.setButtonLabel(branches[current].name);
+        _dropdown.items = options.branches;
+        _dropdown.setButtonLabel(options.branches[options.index].name);
     }
 
     /**
@@ -93,7 +96,7 @@ define(function (require, exports, module) {
             var html = _.escape(item.name);
             return html;
         });
-        classes = ['dropdown-status-bar','dropdown-sixertoy-gitbranch'];
+        classes = ['dropdown-status-bar', 'dropdown-sixertoy-gitbranch'];
         _dropdown.dropdownExtraClasses = classes.join(' ');
         _dropdown.$button.addClass('btn-status-bar').css('width', 'auto').hide();
         $('#sixertoy-gitbranch').append(_dropdown.$button);
