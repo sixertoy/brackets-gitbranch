@@ -59,9 +59,9 @@ define(function (require, exports, module) {
             .attr('title', Strings.UNAVAILABLE)
             .attr('href', '#');
         _dropdown.$button.hide();
-        console.log('gitbranch disabling plugin');
+        console.log('sixertoy-gitbranch: disable plugin');
         if (err !== null) {
-            console.log('gitbranch current project has no git repository');
+            console.log('sixertoy-gitbranch: current project has no git repository');
             if (err.hasOwnProperty('message')) {
                 console.log(err.message);
             }
@@ -85,7 +85,7 @@ define(function (require, exports, module) {
 
 
     function update(event, head){
-        console.log('update head');
+        console.log('sixertoy-gitbranch: update head');
         _dropdown.setButtonLabel(head);
     }
 

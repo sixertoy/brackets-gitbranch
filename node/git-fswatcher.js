@@ -34,14 +34,14 @@
         description = '',
         FS = require('fs'),
         OS = require('os'),
-        Path = require('path'),
-        chokidar = require('chokidar');
+        Path = require('path');
 
 
     function unwatch(cb) {
         try {
-            _watcher.unwatch(_headfile);
-            cb(null, true);
+            if (_headfile) {
+                FS.unwatchFile(_headfile);
+            }
         } catch (e) {
             cb(e, false);
         }
@@ -53,32 +53,42 @@
      *
      */
     function watch(path, cb) {
-        var opts = {
-            flag: 'r',
-            encoding: 'utf8'
-        };
+        var opts;
         _headfile = Path.join(path, '.git', 'HEAD');
         FS.stat(_headfile, function (err, stat) {
             if (err !== null) {
                 _headfile = false;
-                cb(err, null);
+                cb(err, false);
             } else {
                 if (stat.isFile()) {
-                    _watcher = chokidar.watch(_headfile, {
-                        persistent: true
-                    }).on('change', function (event) {
-                        FS.readFile(_headfile, opts, function(err, data){
-                            if(err !== null){
-                                _domainManager.emitEvent(_domainName, 'error', err);
-                            } else {
-                                _domainManager.emitEvent(_domainName, 'change', data);
+                    try {
+                        opts = {
+                            interval: 5007,
+                            persistent: true
+                        };
+                        FS.watchFile(_headfile, opts, function (curr, prev) {
+                            if (curr.mtime > prev.mtime) {
+                                var opts = {
+                                    flag: 'r',
+                                    encoding: 'utf8'
+                                };
+                                FS.readFile(_headfile, opts, function (err, data) {
+                                    if (err !== null) {
+                                        _domainManager.emitEvent(_domainName, 'error', err);
+                                    } else {
+                                        _domainManager.emitEvent(_domainName, 'change', data);
+                                    }
+                                });
                             }
-                        })
-                    });
-                    cb(null, true);
+                        });
+                        cb(null, true);
+                    } catch (e) {
+                        _headfile = false;
+                        cb(new Error('unable to init watcher'), false);
+                    }
                 } else {
                     _headfile = false;
-                    cb(new Error('is not file'), null);
+                    cb(new Error('is not file'), false);
                 }
             }
         });
