@@ -9,11 +9,11 @@
 - Switch from a local branch to an another **not yet implemented**
 - Watch is based on current project .git/HEAD file
 
-![Picture](https://github.com/malas34/brackets-githubnfo/blob/master/screenshot.png)
+![Picture](https://github.com/sixertoy/brackets-gitbranch/blob/master/screenshot.png)
 
 ## Issues
 
-Only tested on WNDOWS, not tested under UNIX
+Only tested on WNDOWS, not yet tested under UNIX
 So if you find any bug please submit an issue :)
 Feel free to collaborate in this project.
 

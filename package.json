@@ -1,15 +1,15 @@
 {
-  "name": "brackets-git-branch",
+  "name": "brackets-gitbranch",
   "title": "Brackets Git Branch",
-  "version": "2.1.0",
-  "description": "Swicth project's git branch from brackets",
+  "version": "3.0.2",
+  "description": "Show project's git branch in status Brackets status bar.Only tested on WNDOWS, not yet tested under UNIX. So if you find any bug please submit an issue ;)",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/malas34/brackets-githubnfo.git"
+    "url": "https://github.com/sixertoy/brackets-gitbranch.git"
   },
   "files": [
     "styles/styles.css",
@@ -24,7 +24,7 @@
     "htmlContent/button.html",
     "htmlContent/dialog.html",
     "node/git-branches.js",
-    "node/git-fs-watcher.js",
+    "node/git-fswatcher.js",
     "node/git-origin.js",
     "node/node-utils.js",
     "LICENCE-MIT",
@@ -43,13 +43,15 @@
   "author": "Matthieu Lassalvy",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/malas34/brackets-githubnfo/issues"
+    "url": "https://github.com/sixertoy/brackets-gitbranch/issues"
   },
-  "homepage": "https://github.com/malas34/brackets-githubnfo",
+  "homepage": "https://github.com/sixertoy/brackets-gitbranch",
   "devDependencies": {
     "grunt": "^0.4.5",
+    "grunt-bump": "^0.3.1",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-compress": "^0.13.0",
+    "grunt-contrib-jshint": "^0.11.2",
     "grunt-contrib-less": "^1.0.1",
     "load-grunt-config": "^0.17.2"
   },
