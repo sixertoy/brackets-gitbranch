@@ -27,45 +27,33 @@
 (function () {
     'use strict';
 
-    var _watcher,
+    var _watcher, _domainManager, _domainName,
         params = [],
         result = [],
         async = true,
         description = '',
-        // _filePath = null,
         FS = require('fs'),
         OS = require('os'),
         Path = require('path'),
         chokidar = require('chokidar');
+
+
+    function unwatch() {
+    }
 
     /**
      *
      *
      *
      */
-    function watch(path, func, cb) {
+    function watch(path, cb) {
         try {
-            // init watcher
-            // sur le fichier .git/HEAD
-            /*
-            _watcher = FS.watch(file, {
-                recursive: false,
-                persistent: false
-            }, function (event, filename) {
-                switch (event) {
-                case 'rename':
-                    break;
-                case 'change':
-                    break;
-                }
-            });
-            */
             var file = Path.join(path, '.git', 'HEAD');
             _watcher = chokidar.watch(file, {
                 persistent: true
             });
-            _watcher.on('change', function (path) {
-                func('changed');
+            _watcher.on('change', function (event) {
+                _domainManager.emitEvent(_domainName, 'git-fswatcher.change', event);
             });
             cb(null, file);
 
@@ -81,15 +69,17 @@
      *
      */
     function init(domainManager) {
-        if (!domainManager.hasDomain('git-fswatcher')) {
-            domainManager.registerDomain('git-fswatcher', {
+        _domainName = 'git-fswatcher';
+        if (!domainManager.hasDomain(_domainName)) {
+            domainManager.registerDomain(_domainName, {
                 major: 0,
                 minor: 1
             });
         }
-        domainManager.registerCommand('git-fswatcher', 'watch', watch, async, description, params, result);
-        //domainManager.registerCommand(_domainName, 'unwatch', unwatch, _async, _description, _params, _result);
-        //domainManager.registerEvent(_domainName, 'change', _events);
+        domainManager.registerEvent(_domainName, 'git-fswatcher.change', []);
+        domainManager.registerCommand(_domainName, 'watch', watch, async, description, params, result);
+        domainManager.registerCommand(_domainName, 'unwatch', unwatch, async, description, params, result);
+        _domainManager = domainManager;
     }
 
     exports.init = init;
