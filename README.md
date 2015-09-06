@@ -14,6 +14,7 @@
 ## Issues
 
 Only tested on WNDOWS, not yet tested under UNIX
+Seem to have issues under WINDOWS 10
 So if you find any bug please submit an issue :)
 Feel free to collaborate in this project.
 
