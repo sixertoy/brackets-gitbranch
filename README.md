@@ -2,6 +2,10 @@
 
 [![MIT License][license-img]][license-url]
 
+## Note
+
+> Under windows path to git exec must be setted in your global environement path variable
+
 ## Description
 
 - Show project's git branch in status bar
@@ -14,7 +18,6 @@
 ## Issues
 
 Only tested on WNDOWS, not yet tested under UNIX
-Seem to have issues under WINDOWS 10
 So if you find any bug please submit an issue :)
 Feel free to collaborate in this project.
 

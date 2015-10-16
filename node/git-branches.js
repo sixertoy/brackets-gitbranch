@@ -60,7 +60,7 @@
         shellOptions.cwd = path;
         try {
             exec(command, shellOptions, function (err, stdout, stderr) {
-                if (err !== null) {
+                if (err) {
                     return cb(stderr, null);
                 } else {
                     res = stdout.split(reg);
@@ -73,7 +73,7 @@
                 }
             });
         } catch (e) {
-            cb(error, null);
+            return cb(e, null);
         }
     }
 
@@ -89,7 +89,7 @@
                 minor: 1
             });
         }
-        domainManager.registerCommand('git-branches', 'get', _execute, async, description, params, result);
+        domainManager.registerCommand('git-branches', 'getBranches', _execute, async, description, params, result);
     }
 
     exports.init = init;

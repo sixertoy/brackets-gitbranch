@@ -1,8 +1,8 @@
 {
   "name": "brackets-gitbranch",
   "title": "Brackets Git Branch",
-  "version": "3.0.2",
-  "description": "Show project's git branch in status Brackets status bar. Only tested on WNDOWS, not yet tested under UNIX. So if you find any bug please submit an issue ;)",
+  "version": "3.0.6",
+  "description": "Show project's git branch in status Brackets status bar. Only tested on WNDOWS, not yet tested under UNIX. So if you find any bug please submit an issue ;). NOTE: path to git exec must be setted in your global environement path variable",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
